@@ -1,0 +1,2220 @@
+<template>
+    <div class style="font-family: Montserrat !important;">
+        <section class="row grid">
+            <div class="col-md-12 pull-right" id="download-btns">
+                <a class="btn btn-success pull-right"
+                   v-bind:class="[full_print_status ? 'disabled':'']"
+                   id="download_btn_full" @click="printPdfFull"
+                   style="width: 250px;margin: 10px;" href="#">
+                    <i v-bind:class="[full_print_status ? 'fa-spinner fa-spin' : 'fa-cloud-download']"
+                       class="fa fa-fw text-white"></i>
+                    Long Test Report
+                </a>
+                <a class="btn btn-success pull-right"
+                   v-bind:class="[short_print_status ? 'disabled':'']"
+                   id="download_btn_short" @click="printPdfShort"
+                   style="width: 250px;margin: 10px;" href="#">
+                    <i v-bind:class="[short_print_status ? 'fa-spinner fa-spin' : 'fa-cloud-download']"
+                       class="fa fa-fw text-white"></i>
+                    Short Test Report
+                </a>
+            </div>
+        </section>
+
+        <!-- Section A | Client Card, Search, Select Test -->
+        <section id="section-a" class="row grid">
+            <ClientCard :client="client" :weight="weight"></ClientCard>
+            <!--  <div class="col-md-4 bg-light client-card" style="height: 110px !important;background-color: rgb(33, 37, 41);">
+              </div>-->
+        </section>
+
+        <!-- Section B | Test Inputs, Output Tables, Output Charts -->
+        <section id="section-b" class="row grid">
+
+            <!-- Section B-1 | Input Fields -->
+            <section id="section-b-1">
+                <div v-if="showForm1" class="row grid" style="margin-right: 0px; margin-left: 0px;">
+                    <form class="form-inline" style="padding: 20px; margin-bottom: 0px; width: 100%;">
+                        <label for="colWeight" class="col-sm-2 col-form-label col-form-label-lg input-labal">Weight
+                            (kg) </label>
+                        <div class="col-md-2">
+                            <input v-model="weight" type="text" class="form-control form-control-lg test-input"
+                                   id="colWeight" track-by="$index" placeholder="Weight (kg)">
+                        </div>
+                        <label for="colHR" class="col-sm-2 col-form-label col-form-label-lg input-labal">HR Peak</label>
+                        <div class="col-md-2">
+                            <input v-model="hrp" type="text" class="form-control form-control-lg test-input" id="colHR"
+                                   placeholder="HR Peak">
+                        </div>
+                        <label for="colBP" class="col-sm-2 col-form-label col-form-label-lg input-labal">BP Peak</label>
+                        <div class="col-md-2">
+                            <input v-model="bpp" type="text" class="form-control form-control-lg test-input" id="colBP"
+                                   placeholder="BP Peak">
+                        </div>
+                    </form>
+                </div>
+                <div v-if="showForm2" class="row grid" style="margin-right: 0px; margin-left: 0px;">
+                    <form class="form-inline" style="padding: 20px; margin-bottom: 0px; width: 100%;">
+                        <label for="hrRest" class="col-sm-2 col-form-label col-form-label-lg input-labal">HR
+                            Rest</label>
+                        <div class="col-md-2">
+                            <input v-model="hrRest" type="text" class="form-control form-control-lg test-input"
+                                   id="hrRest" placeholder="HR Rest">
+                        </div>
+                        <label for="bpRest" class="col-sm-2 col-form-label col-form-label-lg input-labal">BP
+                            rest</label>
+                        <div class="col-md-2">
+                            <input v-model="bpRest" type="text" class="form-control form-control-lg test-input"
+                                   id="bpRest" placeholder="BP rest">
+                        </div>
+                    </form>
+                </div>
+                <div v-if="showForm3" class="row grid" style="margin-right: 0px; margin-left: 0px;">
+                    <form class="form-inline" style="padding: 20px; margin-bottom: 0px; width: 100%;">
+                        <label for="extraWeight" class="col-sm-2 col-form-label col-form-label-lg input-labal">Extra
+                            Weight</label>
+                        <div class="col-md-2">
+                            <input v-model="extraWeight" type="text" class="form-control form-control-lg test-input"
+                                   id="extraWeight" placeholder="Extra Weight">
+                        </div>
+                    </form>
+                </div>
+                <div v-if="showForm4" class="row grid" style="margin-right: 0px; margin-left: 0px;">
+                    <form class="form-inline" style="padding: 20px; margin-bottom: 0px; width: 100%;">
+                        <label for="colHeight" class="col-sm-2 col-form-label col-form-label-lg input-labal">Height
+                            (cm) </label>
+                        <div class="col-md-2">
+                            <input v-model="height" type="text" class="form-control form-control-lg test-input"
+                                   id="colHeight" placeholder="Height (cm)">
+                        </div>
+                        <label for="colRSH" class="col-sm-2 col-form-label col-form-label-lg input-labal">Recommended
+                            Step Height (cm)</label>
+                        <div class="col-md-2">
+                            <input v-model="recomStepHeight" type="text" class="form-control form-control-lg test-input"
+                                   id="colRSH" placeholder="Recommended Step Height (cm)">
+                        </div>
+                        <label for="colPSH" class="col-sm-2 col-form-label col-form-label-lg input-labal">Preferred Step
+                            Height (cm)</label>
+                        <div class="col-md-2">
+                            <input v-model="prefStepHeight" type="text" class="form-control form-control-lg test-input"
+                                   id="colPSH" placeholder="Preferred Step Height (cm)">
+                        </div>
+                    </form>
+                </div>
+
+            </section>
+
+            <!-- Section B-2 | Chart -->
+            <section id="section-b-2">
+                <div class="row legend-collection" id="test-legend-card">
+                    <div class="row test-legend-name">
+                        <div class="">
+                            <h3 class="test-name ">{{testname ? testname : 'Unnamed'}}</h3>
+                            <p class="test-type">{{testtypename}}</p>
+                        </div>
+                    </div>
+                    <div class="row test-legend">
+                        <div class="legend-1">
+                            <p class="legend-heading">VO2 peak</p>
+                            <p class="legend-subheading">ml/kg/min</p>
+                        </div>
+                        <div class="legend-2">
+                            <p class="legend-value">{{this.CustomDecimal(vo2PeakEST)}}</p>
+                        </div>
+                    </div>
+                    <div class="row test-legend">
+                        <div class="legend-1">
+                            <p class="legend-heading">HR peak</p>
+                            <p class="legend-subheading">%predicted = <span style="color: #0474C8; font-weight: bold;">{{this.CustomDecimal(predictedHrRPeakPercentage,0)}}%</span>
+                            </p>
+                        </div>
+                        <div class="legend-2">
+                            <p class="legend-value">{{ items[0] ? (items[0]['HRpeak'] ?
+                                this.CustomDecimal(items[0]['HRpeak'].value) : '') : ''}}</p>
+                        </div>
+                    </div>
+                    <div v-if="items[0] ? (items[0]['Powerpeak']) : false" class="row test-legend">
+                        <div class="legend-1">
+                            <p class="legend-heading">Power peak</p>
+                            <p class="legend-subheading">watts</p>
+                        </div>
+                        <div class="legend-2">
+                            <p class="legend-value">{{ items[0] ? (items[0]['Powerpeak'] ?
+                                this.CustomDecimal(items[0]['Powerpeak'].value) : '') : ''}}</p>
+                        </div>
+                    </div>
+                    <div class="row test-legend">
+                        <div class="legend-1">
+                            <p class="legend-heading">Speed peak</p>
+                            <p class="legend-subheading" v-if="isSpeedTest">steps per min</p>
+                            <p class="legend-subheading" v-if="!isSpeedTest">kph</p>
+                        </div>
+                        <div class="legend-2">
+                            <p class="legend-value">{{ items[0] ? (items[0]['Speedpeak'] ?
+                                this.CustomDecimal(items[0]['Speedpeak'].value) : '') : ''}}</p>
+                        </div>
+                    </div>
+                    <div v-if="items[0] ? (items[0]['gradient']) : false" class="row test-legend">
+                        <div class="legend-1">
+                            <p class="legend-heading">Gradient peak</p>
+                            <p class="legend-subheading">%</p>
+                        </div>
+                        <div class="legend-2">
+                            <p class="legend-value">{{ items[0] ? (items[0]['gradient'] ?
+                                this.CustomDecimal(items[0]['gradient'].value) : '') : ''}}</p>
+                        </div>
+                    </div>
+                    <div v-if="items[0] ? (items[0]['stepHeight']) : false" class="row test-legend">
+                        <div class="legend-1">
+                            <p class="legend-heading">Step Height</p>
+                            <p class="legend-subheading">cm</p>
+                        </div>
+                        <div class="legend-2">
+                            <p class="legend-value">{{ items[0] ? (items[0]['stepHeight'] ?
+                                this.CustomDecimal(items[0]['stepHeight'].value) : '') : ''}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive" style="margin-top: 15px !important;">
+                    <table class="w-100" style="border-collapse: separate; border-spacing: 2px;">
+                        <thead style="background-color:#eef1f9;">
+                        <tr>
+                            <th v-for="tableCol in tableData" :key="tableCol.id" style="padding: 10px;"
+                                :style="{ background: tableCol.pivot.color_code, display: tableCol.pivot.display}"
+                                v-if="tableCol.pivot.display != 'none' && !hiddenFields.includes(tableCol.name)">
+                                <p class="table-heading-text">{{tableCol.heading}}</p>
+                                <p class="table-subheading-text">{{tableCol.sub_heading}}</p>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody style="background-color:#eef1f9;">
+                        <tr v-for="(row, idx1) in items" :key="idx1">
+                            <td class="table-success  td-height" v-for="(col, idx2) in row" :key="idx2"
+                                :style="{ background: col.customStyles.color_code, display: col.customStyles.display}"
+                                v-if="col.customStyles.display != 'none' && !col.is_hidden">
+                                <input v-model="col.value" type="text" @change="onEditorChange($event)"
+                                       class="output-table-text" disabled
+                                       :style="{ background: col.customStyles.color_code, display: col.customStyles.display}"/>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-responsive">
+                    <table class=""
+                           style="width: 100%; border-collapse: separate; border-spacing: 2px;margin-top: 20px;"
+                           id="datatable">
+                        <thead style="background-color:#eef1f9;">
+                        <tr>
+                            <th v-for="tableColb in tableAvailData" :key="tableColb.id" style="padding: 10px;"
+                                v-if="!hiddenFields.includes(tableColb.name)"
+                                :style="{ background: tableColb.pivot.color_code, display: tableColb.pivot.display}">
+                                <p class="table-heading-text">{{tableColb.heading}}</p>
+                                <p class="table-subheading-text">{{tableColb.sub_heading}}</p>
+                            </th>
+                            <th><i class="fas fa-marker"></i></th>
+                        </tr>
+                        </thead>
+                        <tbody style="background-color:#eef1f9;">
+                        <tr v-for="(rowb, idx1b) in avlDataItems" :key="idx1b">
+                            <td class="table-success td-height" v-for="(colb, idx2b) in rowb" :key="idx2b"
+                                @change="calculateVO2Gen(colb,idx1b)" v-if="!colb.is_hidden"
+                                :style="{ background: colb.customStyles.color_code, display: colb.customStyles.display}">
+                                <input v-model="colb.value" type="text" class="input-table-text"
+                                       :style="{ background: colb.customStyles.color_code, display: colb.customStyles.display}"
+                                       disabled/>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row" style="margin-bottom:50px;" id="chart-section">
+                    <div class="col-md-6">
+                        <div class="linechart">
+                            <div class="text-left mx-2">
+                                <p>Linear Correlation: <b>{{this.CustomDecimal(correlation,3)}}</b></p>
+                            </div>
+                            <scatter-chart :chart-data="datacollection" :test="datasetsfull"
+                                           v-on:chart:render="disablePrintBtn(1 ,false)"></scatter-chart>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="linechart">
+                            <div class="mt-3" style="height: 22px;">
+                            </div>
+                            <female-norms-chart :chart-data="datacollection2" :test="datasetsfull"
+                                                v-on:chart:render="disablePrintBtn(1, false)"></female-norms-chart>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Secction B-4 | Available Data table -->
+            <section id="section-b-3">
+                <div class="row" style="display: flex; justify-content: center; margin-top: 10px;">
+                    <button type="button" class="btn btn-danger btn-lg btn-start-program" @click="startProgram()">Start
+                        Program
+                    </button>
+                </div>
+            </section>
+        </section>
+
+        <!-- Section D | Program Data -->
+        <section v-if="loadPrograms" id="section-d" class="row grid">
+            <div class="col-md-3 client-list">
+                <h5>Programs</h5>
+                <!-- client list starts here -->
+                <table class="table client-list">
+                    <tbody>
+                    <tr class="bg-light" v-for="program in programs" :key="program.id"
+                        @click="getProgramData(
+                            program.program_type.id,
+                            program.id,
+                            program.program_type.name,
+                            program.local_created_at.date
+                        )">
+                        <td class="td-client-list" colspan="2">
+                            <p class="program-type"> {{ program.program_type ? program.program_type.name : ''
+                                }} </p>
+                            <p class="d-inline"><span class="created-on-1">Created On </span>&ensp; <b
+                                class="program-date">{{ program.local_created_at.timestamp }}</b></p>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div v-if="!previewProgram" class="col-md-9 program-data">
+                <p>You haven't selected a program yet!</p>
+                <p>Select a program from list to load the program data</p>
+            </div>
+
+            <div v-if="previewProgram" class="col-md-9" style="margin-top: 30px !important;">
+                <div class="row bg-light program-preview-header" style="margin-bottom: -8px;">
+                    <p class="program-name">{{programName}}</p>
+                    <p><span class="created-on">Created On</span>&ensp;&ensp; <span class="program-date">{{programCreated}}</span>
+                    </p>
+                </div>
+                <div class="row program-preview">
+                    <div style="width: inherit;">
+                        <table class="table-responsive"
+                               style="width: inherit; border-collapse: separate; border-spacing: 2px;">
+                            <thead style="background-color:#eef1f9;">
+                            <tr>
+                                <th v-for="tableColb in tableProgram" :key="tableColb.id" style="padding: 10px;"
+                                    :style="{ background: tableColb.pivot.color_code, display: tableColb.pivot.display}">
+                                    <p class="table-heading-text">{{tableColb.heading}}</p>
+                                    <p class="table-subheading-text">{{tableColb.sub_heading}}</p>
+                                </th>
+                                <th><i class="fas fa-marker"></i></th>
+                            </tr>
+                            </thead>
+                            <tbody style="background-color:#eef1f9;">
+                            <tr v-for="(rowb, idx1b) in avlProgramDataItems" :key="idx1b">
+                                <td class="table-success td-height" v-for="(colb, idx2b) in rowb" :key="idx2b"
+                                    @change="calculateProgramData(colb,idx1b)"
+                                    :style="{ background: colb.customStyles.color_code, display: colb.customStyles.display}">
+                                    <input v-model="colb.value" type="text" class="output-table-text"
+                                           :style="{ background: colb.customStyles.color_code, display: colb.customStyles.display}"
+                                           disabled/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="linechart">
+                        <step-chart :width="700" :height="300" :chart-data="datacollectionprogram"
+                                    :yLabel="programChartYLabel"></step-chart>
+                        <div class="row" style="display: flex; justify-content: center; margin-top: 10px;">
+                            <button type="button" class="btn btn-danger btn-lg btn-start-program"
+                                    @click="viewProgram()">View Program
+                            </button>
+                        </div>
+                    </div>
+                    <!-- <button type="button" class="btn btn-danger btn-lg btn-block" @click="viewProgram()">View Program</button> -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Section D | Program Data -->
+        <section v-else id="section-d" class="row grid">
+            <div class="col-md-12 program-data">
+                <p>You haven't created a program yet!</p>
+                <p>Start a program from above to load the test data</p>
+            </div>
+        </section>
+
+        <section id="footer-section"></section>
+    </div>
+
+</template>
+
+<script>
+    import ClientCard from '../components/ClientCard';
+    import LineChart from '../components/LineChart.js';
+    import ScatterChart from '../components/ScatterChart.js';
+    import FemaleNormsChart from '../components/FemaleNormsChart.js';
+    import StepChart from '../components/StepChart.js';
+    import moment from "moment";
+
+    export default ({
+        name: 'test',
+        weight: null,
+        modifiedWeight: null,
+        hrp: null,
+        bpp: null,
+        props: {
+            testtypes: {
+                type: Array
+            },
+            client: {
+                type: Object
+            },
+            testdata: {
+                type: Object
+            },
+            testid: 0,
+            test_type: 0,
+            testname: null,
+            testtypename: null,
+        },
+        mounted() {
+            this.getTestData();
+            this.test_name = this.testname;
+
+            if (window.location.hash === '#footer-section') {
+                $('html, body').animate({
+                    scrollTop: $("#section-d").offset().top
+                }, 2000);
+            }
+            // this.fillData(),
+            // this.fillData2()
+        },
+        components: {
+            ClientCard,
+            LineChart,
+            ScatterChart,
+            FemaleNormsChart,
+            StepChart
+        },
+        data() {
+            return {
+                ageTest: 0,
+                dateTest: '',
+                datacollection: {},
+                datacollection2: {},
+                datacollectionprogram: {},
+                programChartYLabel: '% of VO2 peak',
+                tableData: [],
+                tableAvailData: [],
+                inputData: [],
+                testData: [],
+                tableProgram: [],
+                error: null,
+                loading: false,
+                selected: '',
+                selectedavl: '',
+                items: [],
+                itemsDummyData: [],
+                options: {
+                    scales: {
+                        yAxes: [{
+                            type: 'logarithmic'
+                        }]
+                    }
+                },
+                avlDataItems: [],
+                avlDataItemsDummyTable: [],
+                avlData: [],
+                tempArray: [],
+                obj: Object,
+                obj2: Object,
+                scatterObj: Object,
+                Intercept: null,
+                InterceptB: null,
+                slopeB: null,
+                SX: 0,
+                SY: 0,
+                SXX: 0,
+                SXY: 0,
+                SYY: 0,
+                SXB: 0,
+                SYB: 0,
+                SXXB: 0,
+                SXYB: 0,
+                SYYB: 0,
+                X: null,
+                Y: null,
+                Xvo2: null,
+                Yvo2: null,
+                SumProduct: 0,
+                N: null,
+                Nvo2: null,
+                weight: null,
+                extraWeight: 0,
+                height: null,
+                recomStepHeight: null,
+                prefStepHeight: null,
+                hrp: null,
+                hrRest: null,
+                bpRest: null,
+                bpp: null,
+                power: 201,
+                speed: null,
+                metsPeak: null,
+                vo2Peak: null,
+                vo2PeakEST: null,
+                vo2Range: null,
+                hrPeak: null,
+                hrPeakPredicted: null,
+                age: null,
+                vo2Gen: 2.76,
+                graphY: [],
+                graphX: [],
+                scatterData: [],
+                rpeArray: [],
+                speedArray: [],
+                vo2Array: [],
+                correlation: null,
+                startPoint: null,
+                endPoint: null,
+                trendLineData: [],
+                visibleAddRow: false,
+                gradient: null,
+                vo2GenWalk: null,
+                vo2GenRun: null,
+                tables: null,
+                tablesP: null,
+                objTest: Object,
+                test_name: null,
+                table1_id: 0,
+                table2_id: 0,
+                testId: 0,
+                showModal: false,
+                showForm1: false,
+                showForm2: false,
+                showForm3: false,
+                showForm4: false,
+                isSpeedTest: false,
+                programEnabled: false,
+                previewProgram: false,
+                inputFields: [],
+                programs: [],
+                rowCount: 0,
+                avlProgramDataItems: null,
+                avlProgramDataItemsDummy: null,
+                viewProgramID: 0,
+                programName: null,
+                programCreated: null,
+                loadPrograms: false,
+                formatedDate: null,
+                predictedHrRPeakPercentage: 0,
+                hiddenFields: ['stepHeight'],
+                full_print_status: true,
+                short_print_status: true,
+            }
+        },
+        watch: {},
+        computed: {
+            datasetsfull() {
+                return {
+                    label: 'graph',
+                    type: 'scatter',
+                    datasets: [
+                        {
+                            label: '/data',
+                            backgroundColor: '#E1F5CA',
+                            data: this.graphY // a getter from Vuex
+                        },
+                        {
+                            label: '/analytics',
+                            backgroundColor: '#67C6AE',
+                            data: this.graphX
+                        }
+                    ]
+                }
+            },
+        },
+        methods: {
+            /**
+             * @return {string}
+             */
+            CustomDecimal(value, cnt = 1) {
+                if (value != null && value != '') {
+                    if (!isNaN(value)) {
+                        if (value == Math.floor(value)) {
+                            return parseFloat(value).toFixed(0);
+                        } else {
+                            return parseFloat(value).toFixed(cnt);
+                        }
+
+                        return value;
+                    } else {
+                        return '';
+                    }
+                } else {
+                    return '';
+                }
+            },
+            fillData() {
+                this.datacollection = {
+                    labels: this.graphX,
+                    datasets: [
+                        {
+                            label: 'VO2peak',
+                            backgroundColor: '#f5f5f500',
+                            data: [{
+                                x: (this.items.length > 0 ? this.items[0]['vo2peakEst'].value : 0),
+                                y: (this.items.length > 0 ? this.items[0]['HRpeak'].value : 0)
+                            }], // send VO2 peak and hrpeak here
+                            borderColor: '#dd4b45',
+                            borderWidth: 10,
+                            pointBackgroundColor: "#dd4b45",
+                            pointStyle: 'circle',
+                            rotation: 45,
+                            showLabel: true
+                        },
+                        {
+                            label: 'Heart Rate',
+                            backgroundColor: '#f5f5f500',
+                            data: this.scatterData,
+                            // data: this.graphY,
+                            borderColor: '#82cd4d',
+                            borderWidth: 1,
+                            showLine: false,
+                            pointBackgroundColor: "#82cd4d",
+                        },
+                        {
+                            label: 'Trend',
+                            backgroundColor: '#f5f5f500',
+                            data: this.trendLineData,
+                            borderColor: '#82cd4d',
+                            borderWidth: 4,
+                            showLine: true,
+                        }
+                    ]
+                }
+            },
+            fillData2() { //  norms for VO2 peak
+                var date1 = new Date(this.dateTest);
+                var date2 = new Date(this.client.dob);
+                var diff = parseFloat(Math.floor((date1 - date2)/86400000)/365.25).toFixed(4);
+                
+                if (this.client.gender == 'Male') {
+                    this.datacollection2 = {
+                        labels: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120],
+                        datasets: [
+                            {
+                                label: 'Excellent',
+                                backgroundColor: '#f5f5f500',
+                                data: [{'x': 1, 'y': 62.5}, {'x': 12.5, 'y': 66}, {'x': 75, 'y': 31}, {
+                                    'x': 99,
+                                    'y': 18
+                                }],
+                                borderColor: '#dd4b45',
+                                borderWidth: 1,
+                                radius: 0
+                            },
+                            {
+                                label: 'Very Good',
+                                backgroundColor: '#f5f5f500',
+                                data: [{'x': 1, 'y': 57}, {'x': 12.5, 'y': 60}, {'x': 75, 'y': 28}, {'x': 99, 'y': 16}],
+                                borderColor: '#84d14e',
+                                borderWidth: 1,
+                                radius: 0
+                            },
+                            {
+                                label: 'Good',
+                                showLabel: false,
+                                backgroundColor: '#f5f5f500',
+                                data: [{'x': 1, 'y': 50.5}, {'x': 12.5, 'y': 53}, {'x': 75, 'y': 25}, {
+                                    'x': 99,
+                                    'y': 14
+                                }],
+                                borderColor: '#3259b7',
+                                borderWidth: 1,
+                                radius: 0
+                            },
+                            {
+                                label: 'Average',
+                                showLabel: false,
+                                backgroundColor: '#f5f5f500',
+                                data: [{'x': 1, 'y': 45}, {'x': 12.5, 'y': 47}, {'x': 75, 'y': 22.5}, {
+                                    'x': 99,
+                                    'y': 12
+                                }],
+                                borderColor: '#b466dc',
+                                borderWidth: 1,
+                                radius: 0
+                            },
+                            {
+                                label: 'Fair',
+                                showLabel: false,
+                                backgroundColor: '#f5f5f500',
+                                data: [{'x': 1, 'y': 38}, {'x': 12.5, 'y': 40.7}, {'x': 75, 'y': 19}, {
+                                    'x': 99,
+                                    'y': 10
+                                }],
+                                borderColor: '#527429',
+                                borderWidth: 1,
+                                radius: 0
+                            },
+                            {
+                                label: 'Needs Improvement',
+                                showLabel: false,
+                                backgroundColor: '#f5f5f500',
+                                data: [{'x': 1, 'y': 32.5}, {'x': 12.5, 'y': 34.5}, {'x': 75, 'y': 16.5}, {
+                                    'x': 99,
+                                    'y': 7
+                                }],
+                                borderColor: '#8b66ef',
+                                borderWidth: 1,
+                                radius: 0
+                            },
+                            {
+                                label: 'You are here',
+                                showLabel: true,
+                                filltext: 'testing text',
+                                labelTextColor: '#e68a51',
+                                backgroundColor: '#f5f5f500',
+                                data: [{'x': diff, 'y': this.vo2PeakEST}], // send age and VO2 peak here
+                                borderColor: '#000000',
+                                borderWidth: 4,
+                                pointBackgroundColor: "#000000",
+                                pointStyle: 'circle',
+                            }
+                        ]
+                    }
+                } else {
+                    this.datacollection2 = {
+                        labels: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120],
+                        datasets: [
+                            {
+                                label: 'Excellent',
+                                backgroundColor: '#f5f5f500',
+                                data: [{'x': 1, 'y': 56}, {'x': 9, 'y': 57.5}, {'x': 75, 'y': 23}, {'x': 99, 'y': 10}],
+                                borderColor: '#dd4b45',
+                                borderWidth: 1,
+                                radius: 0
+                            },
+                            {
+                                label: 'Very Good',
+                                backgroundColor: '#f5f5f500',
+                                data: [{'x': 1, 'y': 51}, {'x': 9, 'y': 53}, {'x': 75, 'y': 21.5}, {'x': 99, 'y': 9}],
+                                borderColor: '#84d14e',
+                                borderWidth: 1,
+                                radius: 0
+                            },
+                            {
+                                label: 'Good',
+                                showLabel: false,
+                                backgroundColor: '#f5f5f500',
+                                data: [{'x': 1, 'y': 45.5}, {'x': 9, 'y': 47}, {'x': 75, 'y': 20}, {'x': 99, 'y': 8}],
+                                borderColor: '#3259b7',
+                                borderWidth: 1,
+                                radius: 0
+                            },
+                            {
+                                label: 'Average',
+                                showLabel: false,
+                                backgroundColor: '#f5f5f500',
+                                data: [{'x': 1, 'y': 40}, {'x': 9, 'y': 41.7}, {'x': 75, 'y': 17}, {'x': 99, 'y': 7}],
+                                borderColor: '#b466dc',
+                                borderWidth: 1,
+                                radius: 0
+                            },
+                            {
+                                label: 'Fair',
+                                showLabel: false,
+                                backgroundColor: '#f5f5f500',
+                                data: [{'x': 1, 'y': 34.7}, {'x': 9, 'y': 35.8}, {'x': 75, 'y': 14.7}, {
+                                    'x': 99,
+                                    'y': 6
+                                }],
+                                borderColor: '#527429',
+                                borderWidth: 1,
+                                radius: 0
+                            },
+                            {
+                                label: 'Needs Improvement',
+                                showLabel: false,
+                                backgroundColor: '#f5f5f500',
+                                data: [{'x': 1, 'y': 29}, {'x': 9, 'y': 30.2}, {'x': 75, 'y': 12.4}, {'x': 99, 'y': 5}],
+                                borderColor: '#8b66ef',
+                                borderWidth: 1,
+                                radius: 0
+                            },
+                            {
+                                label: 'You are here',
+                                showLabel: true,
+                                filltext: 'testing text',
+                                labelTextColor: '#e68a51',
+                                backgroundColor: '#f5f5f500',
+                                data: [{'x': diff, 'y': this.vo2PeakEST}], // send age and VO2 peak here
+                                borderColor: '#000000',
+                                borderWidth: 1,
+                                pointBackgroundColor: "#000000",
+                                pointStyle: 'rect',
+                            }
+                        ]
+                    }
+                }
+
+            },
+
+            fillProgramData() {
+                this.datacollectionprogram = {
+                    labels: this.labalsP,
+                    datasets: [
+                        {
+                            label: 'duration',
+                            backgroundColor: '#f5f5f500',
+                            data: this.stepData, // send VO2 peak and hrpeak here
+                            borderColor: '#53565e',
+                            pointBackgroundColor: "#53565e",
+                            pointStyle: 'rect',
+                            rotation: 45,
+                            steppedLine: true
+                        }
+                    ]
+                }
+            },
+
+            getRandomInt() {
+                return Math.floor(Math.random() * (50 - 5 + 1)) + 5
+            },
+
+            getTestData(type) {
+                this.selected = this.test_type;
+                const param1 = this.selected;
+
+                window.axios.get(this.$config.BASE_URL + '/api/test-types/' + (param1)).then((res) => {
+                    this.tables = res.data.data.tables;
+                    for (var i = 0; i < this.tables.length; i++) {
+                        if (i == 0) {
+                            this.tableData = this.tables[i].columns;
+                            this.obj = this.tables[i].columns.reduce((o, key) => ({
+                                ...o,
+                                [key.name]: {
+                                    value: null,
+                                    customStyles: key.pivot,
+                                    column_id: key.id,
+                                    is_hidden: this.hiddenFields.includes(key.name)
+                                }
+                            }), {});
+                        } else if (i == 1) {
+                            this.tableAvailData = this.tables[i].columns;
+                            this.obj1 = this.tables[i].columns.reduce((o, key) => ({
+                                ...o,
+                                [key.name]: {
+                                    value: null,
+                                    customStyles: key.pivot,
+                                    column_id: key.id,
+                                    is_hidden: this.hiddenFields.includes(key.name)
+                                }
+                            }), {});
+                        }
+                    }
+                });
+
+                const testIdPara = this.testid;
+
+                window.axios.get(this.$config.BASE_URL + '/tests/' + (testIdPara)).then((res) => {
+                    this.itemsDummyData = res.data.table1,
+                        // this.items = res.data.table1,
+                        this.avlDataItemsDummyTable = res.data.table2,
+                        // this.avlDataItems = res.data.table2,
+                        this.programs = res.data.programs,
+                        this.setData();
+                    this.vo2PeakEST = parseFloat(this.items[0]['vo2peakEst'].value),
+                        this.programs.length < 0 ? this.loadPrograms = false : this.loadPrograms = true;
+                    this.inputData = res.data.inputFields,
+                        this.inputData.forEach(element => {
+                            if (element.name == 'colWeight') {
+                                this.weight = element.value;
+                            }
+                        });
+                    // this.calculateSlopB();
+                    this.Slope = parseFloat(res.data.slope);
+                    // this.slopeB = parseFloat(res.data.slope);
+                    this.Intercept = parseFloat(res.data.intercept);
+                    // this.InterceptB = parseFloat(res.data.intercept);
+                    // this.currentTime = res.data.currentTime;
+                    this.dateTest = res.data.dateTest;
+                    this.ageTest = res.data.ageTest;
+                    console.log(res.data);
+                    $('.years-old .age-test').text(this.ageTest);
+
+                    this.calculateSlopeB();
+                    this.proccessGraph(),
+                        this.fillData2()
+
+
+                    var hrPeakFromTest = 0;
+                    this.inputData.forEach(element => {
+                        if (element.fieldId == 'colHR') {
+                            hrPeakFromTest = element.value;
+                        }
+                    });
+
+                    // this.predictedHrRPeakPercentage =  (isNaN(parseFloat(hrPeakFromTest)) ? 0 : hrPeakFromTest) /  (isNaN(parseFloat((this.items[0]['predHrp'] ? this.items[0]['predHrp'].value : 0))) ? 0 : this.items[0]['predHrp'].value);
+                    // this.predictedHrRPeakPercentage = isNaN(parseFloat(this.predictedHrRPeakPercentage)) ? 0 : (this.predictedHrRPeakPercentage * 100).toFixed(1);
+
+                    var hrPeakFromTest = isNaN(parseFloat(hrPeakFromTest)) ? 0 : hrPeakFromTest;
+                    var predHrp = this.items.length && this.items[0]['predHrp'] ? parseFloat(this.items[0]['predHrp'].value) : 0;
+
+                    this.predictedHrRPeakPercentage = isNaN(predHrp) || predHrp == 0 ? 0 : Math.floor((hrPeakFromTest / predHrp) * 100);
+
+                });
+            },
+            setData() {
+                for (var i = 0; i < this.itemsDummyData.length; i++) {
+                    this.addRow(0, 1);
+                    let ix = 0;
+                    for (var property in this.itemsDummyData[i]) {
+                        this.items[i][property].value = this.itemsDummyData[i][property].value;
+                        ix++;
+                    }
+                }
+                for (var i = 0; i < this.avlDataItemsDummyTable.length; i++) {
+                    this.addRow(1, 1);
+                    let ix = 0;
+                    for (var property in this.avlDataItemsDummyTable[i]) {
+                        this.avlDataItems[i][property].value = this.avlDataItemsDummyTable[i][property].value;
+                        ix++;
+                    }
+                }
+
+                if (this.testtypename == 'Step Test') {
+                    this.isSpeedTest = true;
+                }
+            },
+            setDataProgram() {
+                for (var i = 0; i < this.avlProgramDataItemsDummy.length; i++) {
+                    this.addRow(2, 1);
+                    let ix = 0;
+                    for (var property in this.avlProgramDataItemsDummy[i]) {
+                        this.avlProgramDataItems[i][property].value = this.avlProgramDataItemsDummy[i][property].value;
+                        ix++;
+                    }
+                }
+            },
+            addRow(type, count) {
+                if (type == 0) {
+                    this.items.push(JSON.parse(JSON.stringify(this.obj)));
+                }
+                if (type == 1) {
+                    for (var i = 0; i < count; i++) {
+                        this.avlDataItems.push(JSON.parse(JSON.stringify(this.obj1)));
+                    }
+                }
+                if (type == 2) {
+                    for (var i = 0; i < count; i++) {
+                        this.avlProgramDataItems.push(JSON.parse(JSON.stringify(this.obj2)));
+                    }
+                }
+                // this.addColor();
+                // this.adjustRowNumbers();
+            },
+            dateFormatter(date) {
+                // date formatting
+                const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+                let current_datetime = new Date(date);
+                // let current_datetime = new Date()
+                let formatted_date = current_datetime.getDate() + "-" + months[current_datetime.getMonth()] + "-" + current_datetime.getFullYear()
+
+                return formatted_date;
+            },
+
+            /**
+             * @param param1
+             * @param programid
+             * @param pName
+             * @param pcreated
+             */
+            getProgramData(param1, programid, pName, pcreated) {
+                this.viewProgramID = programid;
+                this.programName = pName;
+                this.programCreated = pcreated;
+                this.avlProgramDataItems = [];
+                this.outputFields = [];
+                this.tableProgram = [];
+
+                window.axios.get(this.$config.BASE_URL + '/api/program-types/' + (param1)).then((res) => {
+                    const program_name = res.data.data.name;
+                    this.tablesP = res.data.data.tables;
+
+                    for (let i = 0; i < this.tablesP.length; i++) {
+                        this.tableProgram = this.tablesP[i].columns;
+                        this.obj2 = this.tablesP[i].columns.reduce((o, key) => ({
+                            ...o,
+                            [key.name]: {value: null, customStyles: key.pivot, column_id: key.id}
+                        }), {});
+                    }
+
+                    this.programChartYLabel = program_name.includes("%VO2R")
+                        ? "% of VO2 R"
+                        : (program_name.includes("%HRR")
+                            ? "% of HRR" : "% of VO2 peak");
+                });
+
+                window.axios.get(this.$config.BASE_URL + '/programs/' + (programid)).then((res) => {
+                    this.outputFields = res.data.outputFields;
+                    // this.avlProgramDataItems = res.data.table1;
+                    this.avlProgramDataItemsDummy = res.data.table1;
+                    this.setDataProgram();
+
+                    switch (param1) {
+                        case 1:
+                        case 2:
+                        case 6:
+                        case 9:
+                        case 10:
+                        case 11:
+                        case 16:
+                        case 17:
+                            this.proccessProgramGraph();
+                            break;
+                        case 3:
+                        case 8:
+                        case 13:
+                        case 18:
+                            this.proccessGraph2();
+                            break;
+                        case 4:
+                        case 14:
+                        case 19:
+                            this.proccessGraph1();
+                            break;
+                        case 5:
+                        case 15:
+                        case 20:
+                            this.proccessGraph3();
+                            break;
+                        case 7:
+                        case 12:
+                            this.proccessGraph4();
+                            break;
+                    }
+                });
+
+                this.previewProgram = true;
+            },
+            proccessGraph() {
+                this.graphY = [];
+                this.graphX = [];
+                this.scatterData = [];
+                for (var i = 0; i < this.avlDataItems.length; i++) {
+                    if (i == 0) {
+                        this.graphX.push(parseFloat(this.avlDataItems[i]['vo2gen'].value));
+                    } else {
+                        this.graphX.push.apply(this.graphX, [parseFloat(this.avlDataItems[i]['vo2gen'].value)])
+                    }
+                }
+                for (var i = 0; i < this.avlDataItems.length; i++) {
+                    if (i == 0) {
+                        this.graphY.push(parseFloat(this.avlDataItems[i]['heart_rate'].value));
+                    } else {
+                        this.graphY.push.apply(this.graphY, [parseFloat(this.avlDataItems[i]['heart_rate'].value)])
+                    }
+                }
+                for (var i = 0; i < this.avlDataItems.length; i++) {
+                    if (i == 0) {
+                        this.scatterData.push({
+                            y: parseFloat(this.avlDataItems[i]['heart_rate'].value),
+                            x: parseFloat(this.avlDataItems[i]['vo2gen'].value)
+                        });
+                    } else {
+                        this.scatterData.push({
+                            y: parseFloat(this.avlDataItems[i]['heart_rate'].value),
+                            x: parseFloat(this.avlDataItems[i]['vo2gen'].value)
+                        });
+                    }
+                }
+                this.trendLine();
+                this.fillData();
+                this.correlation = parseFloat(this.pearson(this.scatterData)).toFixed(3);
+
+            },
+            proccessProgramGraph() {
+                this.graphPY = [];
+                this.graphPX = [];
+                this.stepData = [];
+                this.labalsP = [];
+                this.totTime = 0;
+                var prevTime = 0;
+                var floatVal = 0;
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        this.graphPX.push(isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value));
+                    } else {
+                        this.graphPX.push.apply(this.graphPX, [isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value)])
+                    }
+                }
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        this.graphPY.push(parseFloat(this.avlProgramDataItems[i]['vo2P'].value));
+                    } else {
+                        this.graphPY.push.apply(this.graphPY, [parseFloat(this.avlProgramDataItems[i]['vo2P'].value)])
+                    }
+                }
+                // var sum = 0;
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    this.totTime += isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value);
+                }
+
+                for (var i = 0; i < this.totTime + 8; i++) {
+                    this.labalsP.push(i);
+                }
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['vo2P'].value);
+                        if (isNaN(floatVal) || floatVal < 1) {
+                            this.stepData.push({y: 0, x: prevTime});
+                        } else {
+                            this.stepData.push({y: parseFloat(this.avlProgramDataItems[i]['vo2P'].value), x: prevTime});
+                        }
+
+                        floatVal = isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value);
+                        prevTime = (prevTime + (isNaN(floatVal) ? 0 : isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value)));
+
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['vo2P'].value);
+                        if (isNaN(floatVal) || floatVal < 1) {
+                            this.stepData.push({y: 0, x: prevTime});
+                        } else {
+                            this.stepData.push({y: parseFloat(this.avlProgramDataItems[i]['vo2P'].value), x: prevTime});
+                        }
+                    } else {
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['vo2P'].value);
+
+                        this.stepData.push({
+                            y: (isNaN(floatVal) ? 0 : parseFloat(this.avlProgramDataItems[i]['vo2P'].value)),
+                            x: prevTime
+                        });
+
+                        floatVal = isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value);
+
+                        prevTime = (prevTime + (isNaN(floatVal) ? 0 : isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value)));
+
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['vo2P'].value);
+                        if (isNaN(floatVal) || floatVal < 1) {
+                            this.stepData.push({y: 0, x: prevTime});
+                        } else {
+                            this.stepData.push({y: parseFloat(this.avlProgramDataItems[i]['vo2P'].value), x: prevTime});
+                        }
+                    }
+                    if (i == this.avlProgramDataItems.length - 1) {
+                        this.stepData.push({y: 0, x: prevTime});
+                    }
+                }
+                this.rowCount = this.avlProgramDataItems.length;
+                this.fillProgramData();
+            },
+            proccessGraph1() {
+                this.graphPY = [];
+                this.graphPX = [];
+                this.stepData = [];
+                this.labalsP = [];
+                this.totTime = 0;
+                var prevTime = 0;
+                var floatVal = 0;
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        this.graphPX.push(isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value));
+                    } else {
+                        this.graphPX.push.apply(this.graphPX, [isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value)])
+                    }
+                }
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        this.graphPY.push(parseFloat(this.avlProgramDataItems[i]['intensityVo2R'].value));
+                    } else {
+                        this.graphPY.push.apply(this.graphPY, [parseFloat(this.avlProgramDataItems[i]['intensityVo2R'].value)])
+                    }
+                }
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    this.totTime += isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value);
+                }
+                for (var i = 0; i < this.totTime + 8; i++) {
+                    this.labalsP.push(i);
+                }
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['intensityVo2R'].value);
+                        if (isNaN(floatVal) || floatVal < 1) {
+                            this.stepData.push({y: 0, x: 0});
+                            floatVal = (parseFloat((typeof this.avlProgramDataItems[i]['duration'] !== 'undefined') ? this.avlProgramDataItems[i]['duration'].value : 0));
+                            prevTime = (isNaN(floatVal) ? 0 : floatVal);
+                            if (!isNaN(floatVal) || floatVal > 0) {
+                                this.stepData.push({y: 0, x: prevTime});
+                            }
+                        } else {
+                            this.stepData.push({
+                                y: parseFloat(this.avlProgramDataItems[i]['intensityVo2R'].value),
+                                x: 0
+                            });
+                            floatVal = (parseFloat((typeof this.avlProgramDataItems[i]['duration'] !== 'undefined') ? this.avlProgramDataItems[i]['duration'].value : 0));
+                            prevTime = (isNaN(floatVal) ? 0 : floatVal);
+                            this.stepData.push({
+                                y: parseFloat(this.avlProgramDataItems[i]['intensityVo2R'].value),
+                                x: prevTime
+                            });
+                        }
+                    } else {
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['intensityVo2R'].value);
+
+                        this.stepData.push({
+                            y: (isNaN(floatVal) ? 0 : parseFloat(this.avlProgramDataItems[i]['intensityVo2R'].value)),
+                            x: prevTime
+                        });
+
+                        floatVal = isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value);
+
+                        prevTime = (prevTime + (isNaN(floatVal) ? 0 : isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value)));
+
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['intensityVo2R'].value);
+                        if (isNaN(floatVal) || floatVal < 1) {
+                            this.stepData.push({y: 0, x: prevTime});
+                        } else {
+                            this.stepData.push({
+                                y: parseFloat(this.avlProgramDataItems[i]['intensityVo2R'].value),
+                                x: prevTime
+                            });
+                        }
+                    }
+                    if (i == this.avlProgramDataItems.length - 1) {
+                        this.stepData.push({y: 0, x: prevTime});
+                    }
+                }
+                this.rowCount = this.avlProgramDataItems.length;
+                this.fillProgramData();
+            },
+            proccessGraph2() {
+                this.graphPY = [];
+                this.graphPX = [];
+                this.stepData = [];
+                this.labalsP = [];
+                this.totTime = 0;
+                var prevTime = 0;
+                var floatVal = 0;
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        this.graphPX.push(isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value));
+                    } else {
+                        this.graphPX.push.apply(this.graphPX, [isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value)])
+                    }
+                }
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        this.graphPY.push(parseFloat(this.avlProgramDataItems[i]['intensityVO2P'].value));
+                    } else {
+                        this.graphPY.push.apply(this.graphPY, [parseFloat(this.avlProgramDataItems[i]['intensityVO2P'].value)])
+                    }
+                }
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    this.totTime += isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value);
+                }
+                for (var i = 0; i < this.totTime + 8; i++) {
+                    this.labalsP.push(i);
+                }
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['intensityVO2P'].value);
+                        if (isNaN(floatVal) || floatVal < 1) {
+                            this.stepData.push({y: 0, x: prevTime});
+                        } else {
+                            this.stepData.push({
+                                y: parseFloat(this.avlProgramDataItems[i]['intensityVO2P'].value),
+                                x: prevTime
+                            });
+                        }
+
+                        floatVal = isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value);
+                        prevTime = (prevTime + (isNaN(floatVal) ? 0 : isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value)));
+
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['intensityVO2P'].value);
+                        if (isNaN(floatVal) || floatVal < 1) {
+                            this.stepData.push({y: 0, x: prevTime});
+                        } else {
+                            this.stepData.push({
+                                y: parseFloat(this.avlProgramDataItems[i]['intensityVO2P'].value),
+                                x: prevTime
+                            });
+                        }
+                    } else {
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['intensityVO2P'].value);
+
+                        this.stepData.push({
+                            y: (isNaN(floatVal) ? 0 : parseFloat(this.avlProgramDataItems[i]['intensityVO2P'].value)),
+                            x: prevTime
+                        });
+
+                        floatVal = isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value);
+
+                        prevTime = (prevTime + (isNaN(floatVal) ? 0 : isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value)));
+
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['intensityVO2P'].value);
+                        if (isNaN(floatVal) || floatVal < 1) {
+                            this.stepData.push({y: 0, x: prevTime});
+                        } else {
+                            this.stepData.push({
+                                y: parseFloat(this.avlProgramDataItems[i]['intensityVO2P'].value),
+                                x: prevTime
+                            });
+                        }
+                    }
+                    if (i == this.avlProgramDataItems.length - 1) {
+                        this.stepData.push({y: 0, x: prevTime});
+                    }
+                }
+                this.rowCount = this.avlProgramDataItems.length;
+                this.fillProgramData();
+            },
+            proccessGraph3() {
+                this.graphPY = [];
+                this.graphPX = [];
+                this.stepData = [];
+                this.labalsP = [];
+                this.totTime = 0;
+                var prevTime = 0;
+                var floatVal = 0;
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        this.graphPX.push(isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value));
+                    } else {
+                        this.graphPX.push.apply(this.graphPX, [isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value)])
+                    }
+                }
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        this.graphPY.push(parseFloat(this.avlProgramDataItems[i]['intensityHRR'].value));
+                    } else {
+                        this.graphPY.push.apply(this.graphPY, [parseFloat(this.avlProgramDataItems[i]['intensityHRR'].value)])
+                    }
+                }
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    this.totTime += isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value);
+                }
+                for (var i = 0; i < this.totTime + 8; i++) {
+                    this.labalsP.push(i);
+                }
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['intensityHRR'].value);
+                        if (isNaN(floatVal) || floatVal < 1) {
+                            this.stepData.push({y: 0, x: prevTime});
+                        } else {
+                            this.stepData.push({
+                                y: parseFloat(this.avlProgramDataItems[i]['intensityHRR'].value),
+                                x: prevTime
+                            });
+                        }
+
+                        floatVal = isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value);
+                        prevTime = (prevTime + (isNaN(floatVal) ? 0 : isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value)));
+
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['intensityHRR'].value);
+                        if (isNaN(floatVal) || floatVal < 1) {
+                            this.stepData.push({y: 0, x: prevTime});
+                        } else {
+                            this.stepData.push({
+                                y: parseFloat(this.avlProgramDataItems[i]['intensityHRR'].value),
+                                x: prevTime
+                            });
+                        }
+                    } else {
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['intensityHRR'].value);
+
+                        this.stepData.push({
+                            y: (isNaN(floatVal) ? 0 : parseFloat(this.avlProgramDataItems[i]['intensityHRR'].value)),
+                            x: prevTime
+                        });
+
+                        floatVal = isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value);
+
+                        prevTime = (prevTime + (isNaN(floatVal) ? 0 : isNaN(parseFloat(this.avlProgramDataItems[i]['duration'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['duration'].value)));
+
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['intensityHRR'].value);
+                        if (isNaN(floatVal) || floatVal < 1) {
+                            this.stepData.push({y: 0, x: prevTime});
+                        } else {
+                            this.stepData.push({
+                                y: parseFloat(this.avlProgramDataItems[i]['intensityHRR'].value),
+                                x: prevTime
+                            });
+                        }
+                    }
+                    if (i == this.avlProgramDataItems.length - 1) {
+                        this.stepData.push({y: 0, x: prevTime});
+                    }
+                }
+                this.rowCount = this.avlProgramDataItems.length;
+                this.fillProgramData();
+            },
+            proccessGraph4() {
+                this.graphY = [];
+                this.graphX = [];
+                this.stepData = [];
+                this.labalsP = [];
+                this.totTime = 0;
+                var prevTime = 0;
+                var floatVal = 0;
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        this.graphX.push(isNaN(parseFloat(this.avlProgramDataItems[i]['durationT'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['durationT'].value));
+                    } else {
+                        this.graphX.push.apply(this.graphX, [isNaN(parseFloat(this.avlProgramDataItems[i]['durationT'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['durationT'].value)])
+                    }
+                }
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        this.graphY.push(parseFloat(this.avlProgramDataItems[i]['vo2P'].value));
+                    } else {
+                        this.graphY.push.apply(this.graphY, [parseFloat(this.avlProgramDataItems[i]['vo2P'].value)])
+                    }
+                }
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    this.totTime += isNaN(parseFloat(this.avlProgramDataItems[i]['durationT'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['durationT'].value);
+                }
+                for (var i = 0; i < this.totTime + 8; i++) {
+                    this.labalsP.push(i);
+                }
+                for (var i = 0; i < this.avlProgramDataItems.length; i++) {
+                    if (i == 0) {
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['vo2P'].value);
+                        if (isNaN(floatVal) || floatVal < 1) {
+                            this.stepData.push({y: 0, x: prevTime});
+                        } else {
+                            this.stepData.push({y: parseFloat(this.avlProgramDataItems[i]['vo2P'].value), x: prevTime});
+                        }
+
+                        floatVal = isNaN(parseFloat(this.avlProgramDataItems[i]['durationT'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['durationT'].value);
+                        prevTime = (prevTime + (isNaN(floatVal) ? 0 : isNaN(parseFloat(this.avlProgramDataItems[i]['durationT'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['durationT'].value)));
+
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['vo2P'].value);
+                        if (isNaN(floatVal) || floatVal < 1) {
+                            this.stepData.push({y: 0, x: prevTime});
+                        } else {
+                            this.stepData.push({y: parseFloat(this.avlProgramDataItems[i]['vo2P'].value), x: prevTime});
+                        }
+                    } else {
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['vo2P'].value);
+
+                        this.stepData.push({
+                            y: (isNaN(floatVal) ? 0 : parseFloat(this.avlProgramDataItems[i]['vo2P'].value)),
+                            x: prevTime
+                        });
+
+                        floatVal = isNaN(parseFloat(this.avlProgramDataItems[i]['durationT'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['durationT'].value);
+
+                        prevTime = (prevTime + (isNaN(floatVal) ? 0 : isNaN(parseFloat(this.avlProgramDataItems[i]['durationT'].value)) ? 0 : parseFloat(this.avlProgramDataItems[i]['durationT'].value)));
+
+                        floatVal = parseFloat(this.avlProgramDataItems[i]['vo2P'].value);
+                        if (isNaN(floatVal) || floatVal < 1) {
+                            this.stepData.push({y: 0, x: prevTime});
+                        } else {
+                            this.stepData.push({y: parseFloat(this.avlProgramDataItems[i]['vo2P'].value), x: prevTime});
+                        }
+                    }
+                    if (i == this.avlProgramDataItems.length - 1) {
+                        this.stepData.push({y: 0, x: prevTime});
+                    }
+                }
+                this.rowCount = this.avlProgramDataItems.length;
+                this.fillProgramData();
+            },
+            // This should implement as reusable - soon
+            calculateSlope() {
+
+                this.N = this.avlDataItems.length;
+                this.X = this.avlDataItems;
+                this.Y = this.avlDataItems;
+
+                this.SX = this.SY = this.SXY = this.SXX = this.SYY = 0;
+
+                for (var i = 0; i < this.N; i++) {
+                    if (parseFloat(this.X[i]['t_name'].value) != 0) {
+                        this.SX = this.SX + parseFloat(this.X[i]['t_name'].value);
+                        this.SY = this.SY + parseFloat(this.Y[i]['heart_rate'].value);
+                        this.SXY = this.SXY + parseFloat(this.X[i]['t_name'].value) * parseFloat(this.Y[i]['heart_rate'].value);
+                        this.SXX = this.SXX + parseFloat(this.X[i]['t_name'].value) * parseFloat(this.X[i]['t_name'].value);
+                        this.SYY = this.SYY + parseFloat(this.Y[i]['heart_rate'].value) * parseFloat(this.Y[i]['heart_rate'].value);
+                    }
+                }
+
+                this.Slope = ((this.N * this.SXY) - (this.SX * this.SY)) / ((this.N * this.SXX) - (this.SX * this.SX));
+                this.calculateIntercept();
+
+            },
+            calculateIntercept() {
+                this.Intercept = (this.SY - (this.Slope * this.SX)) / this.N;
+            },
+            /**
+             *  Calculate the pearson correlation score between two items in a dataset.
+             *
+             *  @param  {object}  prefs The dataset containing data about both items that
+             *                    are being compared.
+             *  @param  {string}  p1 Item one for comparison.
+             *  @param  {string}  p2 Item two for comparison.
+             *  @return {float}  The pearson correlation score.
+             */
+            pearsonCorrelation(prefs, p1, p2) {
+                var si = [];
+
+                for (var key in prefs[p1]) {
+                    if (prefs[p2][key]) si.push(key);
+                }
+
+                var n = si.length;
+
+                if (n == 0) return 0;
+
+                var sum1 = 0;
+                for (var i = 0; i < si.length; i++) sum1 += prefs[p1][si[i]];
+
+                var sum2 = 0;
+                for (var i = 0; i < si.length; i++) sum2 += prefs[p2][si[i]];
+
+                var sum1Sq = 0;
+                for (var i = 0; i < si.length; i++) {
+                    sum1Sq += Math.pow(prefs[p1][si[i]], 2);
+                }
+
+                var sum2Sq = 0;
+                for (var i = 0; i < si.length; i++) {
+                    sum2Sq += Math.pow(prefs[p2][si[i]], 2);
+                }
+
+                var pSum = 0;
+                for (var i = 0; i < si.length; i++) {
+                    pSum += prefs[p1][si[i]] * prefs[p2][si[i]];
+                }
+
+                var num = pSum - (sum1 * sum2 / n);
+                var den = Math.sqrt((sum1Sq - Math.pow(sum1, 2) / n) *
+                    (sum2Sq - Math.pow(sum2, 2) / n));
+
+                if (den == 0) return 0;
+
+                return num / den;
+            },
+            pearson(values) {
+                const n = values.length;
+
+                if (n == 0) return 0;
+
+                let meanX = 0;
+                let meanY = 0;
+                for (var i = 0; i < n; i++) {
+                    meanX += values[i].x / n
+                    meanY += values[i].y / n
+                }
+
+                let num = 0;
+                let den1 = 0;
+                let den2 = 0;
+
+                for (var i = 0; i < n; i++) {
+                    let dx = (values[i].x - meanX);
+                    let dy = (values[i].y - meanY);
+                    num += dx * dy
+                    den1 += dx * dx
+                    den2 += dy * dy
+                }
+
+                const den = Math.sqrt(den1) * Math.sqrt(den2);
+
+                if (den == 0) return 0;
+
+                return num / den;
+            },
+            calculateSlopeB() {
+                // cal slope
+                this.Nvo2 = this.avlDataItems.length;
+                this.Xvo2 = this.avlDataItems;
+                this.Yvo2 = this.avlDataItems;
+
+                this.SXB = this.SYB = this.SXYB = this.SXXB = this.SYYB = 0;
+
+                // can use array reduce instead of for loop, it's pretty | lakmal
+                // this.SXB = this.Xvo2.reduce((a, b) => a['vo2gen'] + b['vo2gen'], 0);
+
+                for (var i = 0; i < this.Nvo2; i++) {
+                    if (parseFloat(this.Xvo2[i]['heart_rate'].value) != 0) {
+                        this.SXB = this.SXB + parseFloat(this.Xvo2[i]['vo2gen'].value);
+                        this.SYB = this.SYB + parseFloat(this.Yvo2[i]['heart_rate'].value);
+                        this.SXYB = this.SXYB + parseFloat(this.Xvo2[i]['vo2gen'].value) * parseFloat(this.Yvo2[i]['heart_rate'].value);
+                        this.SXXB = this.SXXB + parseFloat(this.Xvo2[i]['vo2gen'].value) * parseFloat(this.Xvo2[i]['vo2gen'].value);
+                        this.SYYB = this.SYYB + parseFloat(this.Yvo2[i]['heart_rate'].value) * parseFloat(this.Yvo2[i]['heart_rate'].value);
+                    }
+                }
+
+                this.slopeB = ((this.Nvo2 * this.SXYB) - (this.SXB * this.SYB)) / ((this.Nvo2 * this.SXXB) - (this.SXB * this.SXB));
+                this.InterceptB = (this.SYB - (this.slopeB * this.SXB)) / this.Nvo2;
+            },
+            // calculate trend line
+            trendLine() {
+                // if(this.selected == 1) {
+                //     this.startPoint = (this.Slope  * this.graphX[0]) + this.Intercept;
+
+                //     this.endPoint = (this.Slope  * this.graphX[(this.graphX.length -1)]) + this.Intercept;
+
+                //     this.trendLineData = [{y:this.startPoint,x:this.graphX[0]},{y:this.endPoint,x:this.graphX[(this.graphX.length-1)]}]
+                // } else {
+                this.startPoint = (this.slopeB * this.graphX[0]) + this.InterceptB;
+
+                this.endPoint = (this.slopeB * this.graphX[(this.graphX.length - 1)]) + this.InterceptB;
+
+                this.trendLineData = [{y: this.startPoint, x: this.graphX[0]}, {
+                    y: this.endPoint,
+                    x: this.graphX[(this.graphX.length - 1)]
+                }]
+                // }
+            },
+            calculateSlopB() {
+                // cal slope
+                // this.Nvo2 = this.avlDataItems.length;
+                // this.Xvo2 = this.avlDataItems;
+                // this.Yvo2 = this.avlDataItems;
+
+                // this.SXB = this.SYB = this.SXYB = this.SXXB = this.SYYB = 0;
+
+                // for (var i = 0; i < this.Nvo2; i++) {
+                //     if(parseFloat(this.Xvo2[i]['t_name'].value) != 0) {
+                //         this.SXB  = this.SXB + parseFloat(this.Xvo2[i]['vo2gen'].value);
+                //         this.SYB  = this.SYB + parseFloat(this.Yvo2[i]['heart_rate'].value);
+                //         this.SXYB = this.SXYB + parseFloat(this.Xvo2[i]['vo2gen'].value) * parseFloat(this.Yvo2[i]['heart_rate'].value);
+                //         this.SXXB = this.SXXB + parseFloat(this.Xvo2[i]['vo2gen'].value) * parseFloat(this.Xvo2[i]['vo2gen'].value);
+                //         this.SYYB = this.SYYB + parseFloat(this.Yvo2[i]['heart_rate'].value) * parseFloat(this.Yvo2[i]['heart_rate'].value);
+                //     }
+                // }
+
+                // this.slopeB = ((this.Nvo2 * this.SXYB) - (this.SXB * this.SYB)) / ((this.Nvo2 * this.SXXB) - (this.SXB * this.SXB));
+                // this.InterceptB = (this.SYB - (this.slopeB * this.SXB)) / this.Nvo2;
+
+            },
+            startProgram() {
+                window.location.href = this.$config.BASE_URL + '/new-program?client_id=' + this.client.id + '&test_id=' + this.testid;
+            },
+            viewProgram(programId) {
+                window.location.href = this.$config.BASE_URL + '/view-program?client_id=' + this.client.id + '&program_id=' + this.viewProgramID;
+            },
+            validateData() {
+                if (this.avlDataItems.length < 1) {
+                    alert('feed some data to table');
+                    return false;
+                }
+                return true;
+            },
+            formatDate(value, fmt = 'D MMM YYYY') {
+                return (value == null)
+                    ? ''
+                    : moment(value, 'YYYY-MM-DD').format(fmt)
+            },
+            printPdfShort() {
+                return this.getPdfReport('short');
+            },
+            printPdfFull() {
+                return this.getPdfReport('full');
+            },
+            getPdfReport(type) {
+                let legend_data = [];
+                //Loading active
+                this.disablePrintBtn(type, true, 0);
+
+                //Test Legend data fetch for pdf
+                $('#test-legend-card > .test-legend').each(function (i, e) {
+                    const item = $(e).find('.legend-1'), value = $(e).find('.legend-2 > .legend-value').text();
+
+                    legend_data.push({
+                        heading: item.find('.legend-heading').text(),
+                        sub_heading: item.find('.legend-subheading').text(),
+                        value: value,
+                    });
+                });
+
+                let data = {
+                    client: Object.assign(this.client, {'weight': this.weight}),
+                    test_details: {test_name: this.testname, test_type: this.testtypename},
+                    table_headers: this.tableAvailData,
+                    table_data: this.avlDataItems,
+                    summery_headers: this.tableData,
+                    summery_data: this.items,
+                    scatter_chart: {
+                        image: document.getElementById('scatter-chart').toDataURL(),
+                        correlation: this.correlation
+                    },
+                    line_chart: document.getElementById('line-chart').toDataURL(),
+                    legend_data: legend_data,
+                    hidden_columns: this.hiddenFields,
+                    report_type: type,
+                    age_test: this.ageTest,
+                    date_test: this.dateTest
+                };
+
+                window.axios.post(`${this.$config.BASE_URL}/test/downloadPDF`, data)
+                    .then((res) => {
+                        const link = document.createElement('a');
+
+                        link.href = res.data.url;
+                        link.download = res.data.url.substr(res.data.url.lastIndexOf('/') + 1);
+                        link.click();
+                        this.disablePrintBtn(type, false, 0);
+                    }).catch(function (error) {
+                    console.log(error);
+                    this.disablePrintBtn(type, false, 0);
+                });
+            },
+            disablePrintBtn(type, status, time) {
+                let milliseconds = typeof time === 'undefined' ? 3000 : time;
+
+                setTimeout(() => {
+                    if (type === 'full') {
+                        this.full_print_status = status;
+                    } else if (type === 'short') {
+                        this.short_print_status = status;
+                    } else {
+                        this.full_print_status = status;
+                        this.short_print_status = status;
+                    }
+                }, milliseconds);
+            }
+        }
+
+    })
+</script>
+
+<style scoped>
+    @import url("https://fonts.googleapis.com/css?family=Montserrat:400,700");
+
+    .container-full-width {
+        width: 100vw !important;
+        max-width: 100vw !important;
+    }
+
+    .box {
+        padding: 1em;
+        color: #fff;
+    }
+
+    #section-a {
+        background-color: #f8f9fa;
+        width: 40%;
+        height: 128px;
+        padding: 1em;
+        margin: 1em 0;
+        justify-content: space-between;
+    }
+
+    #section-b {
+        margin: 0 0 1em;
+    }
+
+    #section-b-1 {
+        background-color: #bfc8d7;
+        width: 100%;
+    }
+
+    #section-b-2 {
+        background-color: #fafafb;
+        padding: 25px;
+        width: 100%;
+    }
+
+    #section-b-3 {
+        background-color: #fafafb;
+        padding: 25px;
+        width: 100%;
+    }
+
+    #section-b-2 .input {
+        max-width: 146px !important;
+    }
+
+    .input {
+        max-width: 146px !important;
+    }
+
+    #section-c {
+        background-color: #bfc8d7;
+        padding: 20px;
+    }
+
+    #section-d {
+        background-color: #c0c9d5;
+        padding: 20px;
+        margin: 0 0 3em;
+        min-height: 400px;
+    }
+
+    #section-d .program-data {
+        background-color: #eef1f9;
+        padding: 20px;
+        border-style: dashed;
+        border-color: #bfc8d7;
+        text-align: center;
+    }
+
+    #section-c .client-list {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .col-centered {
+        text-align: center;
+        margin: 0 auto;
+        margin-left: 0;
+    }
+
+    #test-drop-down {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    #inputState {
+        width: inherit;
+    }
+
+    #colWeight, #colHR, #colBP {
+        width: inherit;
+    }
+
+    .legend {
+        padding: 5px;
+        background-color: #eef1f9;
+        border-radius: 5px;
+        height: 80px;
+        display: flex;
+    }
+
+    .legend-1 {
+        border-right: black;
+        border-right-style: groove;
+        border-right-width: 1px;
+        margin-right: 5px;
+        padding-right: 5px;
+        padding: 5px;
+    }
+
+    .legend-2 {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+    }
+
+    #section-d .client-list {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .client-list {
+        border-collapse: separate;
+        border-spacing: 0em 0.5em;
+    }
+
+    .td-client-list:hover {
+        border: 0.2em solid #5abf5a !important;
+    }
+
+    .client-name {
+        font-size: 1.1rem;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .client-list-heading {
+        font-size: 1.2rem !important;
+    }
+
+    .p-l-2 {
+        padding-left: 0.5rem !important;
+    }
+
+    .new-program {
+        width: 100%;
+        display: flex;
+    }
+
+    .small {
+        margin: 100px auto;
+    }
+
+    .program-preview-section {
+        background-color: white;
+        margin-right: 0px;
+        padding: 0;
+    }
+
+    .program-preview-header {
+        background-color: #c0c9d5;
+        margin: 8px;
+        padding: 10px;
+        width: 100%;
+        display: block;
+    }
+
+    .program-preview {
+        background-color: #eef1f8;
+        min-height: 100px;
+        margin: 8px;
+        padding: 10px;
+        width: inherit;
+    }
+
+    .linechart {
+        height: 470px;
+        border-radius: 6px;
+        background-color: #EEF1F9;
+        margin: auto;
+        margin-top: 30px;
+        padding: 20px 20px 20px;
+    }
+
+    .test-legend {
+        height: 74px;
+        width: 248px;
+        border-radius: 6px;
+        background-color: #EEF1F9;
+        padding: 8px;
+        margin: auto;
+    }
+
+    .legend-value {
+        height: 37px;
+        color: #0474C8;
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: 0.36px;
+        line-height: 37px;
+        margin: auto;
+    }
+
+    .legend-heading {
+        height: 29px;
+        color: #0474C8;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 0.29px;
+        line-height: 29px;
+        margin-bottom: auto;
+    }
+
+    .legend-subheading {
+        height: 18px;
+        color: #000;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.17px;
+        line-height: 18px;
+        margin: auto;
+    }
+
+    .legend-collection {
+        padding: 8px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .detail-row {
+        margin: -12px;
+        padding: 10px;
+        background-color: #D6DDEA;
+    }
+
+    .legend {
+        padding: 5px;
+        background-color: #ffffff87;
+        border-radius: 5px;
+        position: absolute;
+        right: 15px;
+        height: 70px;
+    }
+
+    .legend-1 {
+        border-right: black;
+        border-right-style: groove;
+        border-right-width: 1px;
+        margin-right: 5px;
+        padding-right: 5px;
+        padding: 5px;
+    }
+
+    .legend-2 {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+    }
+
+    .input-labal {
+        height: 19px;
+        color: #000;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 0.19px;
+        line-height: 19px;
+    }
+
+    .test-input {
+        height: 44px;
+        /* width: 92px;	 */
+        font-size: 19px;
+        border: 1px solid #989AA1;
+        border-radius: 6px;
+        background-color: #EEF1F9;
+    }
+
+    .table-heading-text {
+        height: 19px;
+        width: 170px;
+        color: #000;
+        font-size: 16px;
+        font-weight: bold;
+        letter-spacing: 0.19px;
+        line-height: 19px;
+        max-width: 170px;
+        margin: auto;
+    }
+
+    .table-subheading-text {
+        height: 18px;
+        color: #000;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.17px;
+        line-height: 18px;
+        max-width: 160px;
+        margin: auto;
+    }
+
+    .output-table-text {
+        height: 20px;
+        color: #1B2031;
+        font-size: 19px;
+        text-align: center;
+        font-weight: bold;
+        letter-spacing: 0.2px;
+        line-height: 20px;
+        /* max-width: 160px; */
+        height: 31px;
+        width: 100%;
+        background-color: rgb(238, 241, 249);
+    }
+
+    .input-table-text {
+        height: 19px;
+        color: #1B2031;
+        font-size: 19px;
+        text-align: center;
+        font-weight: bold;
+        letter-spacing: 0.19px;
+        line-height: 19px;
+        height: 31px;
+        /* max-width: 160px; */
+        height: 31px;
+        width: 100%;
+        /* background-color: rgb(249, 246, 233); */
+    }
+
+    .td-height {
+        height: 34px;
+        background-color: rgba(255, 255, 249, 0.7);
+    }
+
+    .btn-remove-row {
+        background: #f0f8ff00;
+        border: none;
+        height: 31px;
+    }
+
+    .btn-generate-report {
+        height: 44px;
+        width: 315px;
+        border: 1px solid #36A036;
+        border-radius: 3px;
+        background-color: #5ABF5A;
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: 0.14px;
+        text-align: center;
+    }
+
+    .btn-start-program {
+        height: 44px;
+        width: 315px;
+        border-radius: 3px;
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: 0.14px;
+        text-align: center;
+    }
+
+    .test-legend-name {
+        height: 74px;
+        width: 278px;
+        background-color: #FAFAFB;
+        margin: auto;
+        padding-top: 10px;
+    }
+
+    .test-name {
+        /* height: 18px; */
+        width: 100%;
+        color: #000;
+        font-family: Montserrat !important;
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 0.22px;
+        line-height: 22px;
+    }
+
+    .test-type {
+        /* height: 18px;	 */
+        color: #000;
+        font-family: Montserrat !important;
+        font-size: 14px;
+        letter-spacing: 0.17px;
+        line-height: 18px;
+    }
+
+    .programs {
+        height: 22px;
+        width: 93px;
+        color: #000;
+        font-family: Montserrat;
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 0.22px;
+        line-height: 22px;
+    }
+
+    .created-on {
+        height: 19px;
+        width: 91px;
+        color: #989AA1;
+        font-family: Montserrat;
+        font-size: 16px;
+        letter-spacing: 0.19px;
+        line-height: 19px;
+    }
+
+    .created-on-1 {
+        height: 16px;
+        width: 79px;
+        color: #989AA1;
+        font-family: Montserrat;
+        font-size: 13px;
+        font-weight: bold;
+        letter-spacing: 0.16px;
+        line-height: 16px;
+    }
+
+    .program-date {
+        height: 18px;
+        width: 89px;
+        color: #989AA1;
+        font-family: Montserrat;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.17px;
+        line-height: 18px;
+    }
+
+    .program-name {
+        height: 25px;
+        color: #1B2031;
+        font-family: Montserrat;
+        font-size: 21px;
+        letter-spacing: 0.25px;
+        line-height: 25px;
+    }
+
+    .program-type {
+        color: #1B2031;
+        font-family: Montserrat;
+        font-size: 16px;
+        letter-spacing: 0.19px;
+        line-height: 19px;
+    }
+
+    @media (max-width: 700px) {
+        #section-a .form-inline {
+            display: grid;
+        }
+
+        .col-centered {
+            text-align: center;
+            margin: 0;
+        }
+
+        #section-a .form-control-lg {
+            width: 100%;
+        }
+    }
+
+
+    /* for report*/
+
+    #section-b-2-report {
+        background-color: #fafafb;
+        padding: 10px;
+        width: 100%;
+    }
+
+    .test-legend-report {
+        height: 74px;
+        width: 210px;
+        border-radius: 6px;
+        background-color: #EEF1F9;
+        padding: 8px;
+        margin: auto;
+    }
+
+
+    .legend-value-report {
+        height: 37px;
+        color: #0474C8;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 0.36px;
+        line-height: 37px;
+        margin: auto;
+    }
+
+    .test-legend-name-report {
+        height: 74px;
+        width: 200px;
+        background-color: #FAFAFB;
+        margin: auto;
+        padding-top: 10px;
+    }
+
+
+    .table-heading-text-report {
+        height: 19px;
+        width: 160px;
+        color: #000;
+        /* font-family: Montserrat;	 */
+        font-size: 16px;
+        font-weight: bold;
+        letter-spacing: 2.60px;
+        line-height: 19px;
+        max-width: 160px;
+        margin: auto;
+    }
+
+    .table-subheading-text-report {
+        height: 18px;
+        color: #000;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 1.60px;
+        line-height: 18px;
+        max-width: 160px;
+        margin: auto;
+    }
+
+</style>

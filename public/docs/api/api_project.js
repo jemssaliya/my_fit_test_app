@@ -1,0 +1,1 @@
+define({  "name": "WebApp Backend API",  "version": "0.0.1",  "description": "Web service to communicate with the backend.",  "url": "/api/v1",  "sampleUrl": false,  "defaultVersion": "0.0.0",  "apidoc": "0.3.0",  "generator": {    "name": "apidoc",    "time": "2020-01-09T06:04:30.936Z",    "url": "http://apidocjs.com",    "version": "0.17.7"  }});

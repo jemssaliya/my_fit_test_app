@@ -1,0 +1,120 @@
+<template>
+    <div class="col-md-12 bg-light client-card" style="height: 110px !important;">
+        <h2 style="display: inline;font-family: Montserrat !important;" class="client-name">{{client.name}}</h2>
+        <a class="pull-right" :href="'/clients/edit/' + client.id">
+            <h6 class="pull-right edit-profile"> Edit Profile </h6>
+        </a>
+        <p class="gender-text">{{client.gender}}</p>
+        <p class="years-old">
+            <b> {{client.age}} </b> Years old <span
+            class="dob-28-02-1991">DOB: {{formatDate(client.dob,'DD/MM/YYYY')}} </span>
+            <span v-if="weight" style="float: right; margin-right: 5px;">Weight (kg) <b style="font-size: 18px;">{{weight}}</b></span>
+        </p>
+
+    </div>
+</template>
+
+<script>
+    import moment from "moment";
+
+    export default {
+        name: 'clsienCard',
+        props: {
+            client: {
+                type: Object
+            },
+            weight: null
+        },
+        mounted() {
+            // this.weight = parseFloat(this.weight);
+            // if(!isNaN(this.weight) && this.weight !== 0) {
+            //     if(this.weight !== 'null') {
+            //         this.weight = 'Weight :' + newWeight;
+            //     }
+            // }else{
+            //     this.weight = 'Weight : not available for this view';
+            // }
+        },
+        watch: {
+            'weight': function (newVal, oldVal) {
+                console.log(this.weight);
+                var newWeight = parseFloat(this.weight);
+                if (!isNaN(newWeight) && newWeight !== 0) {
+                    if (newWeight !== 'null') {
+                        this.weightData = 'Weight :' + newWeight;
+                    }
+                }
+            }
+        },
+        data() {
+            return {
+                weightData: '',
+            }
+        },
+        methods: {
+            formatDate(value, fmt = 'D MMM YYYY') {
+                return (value == null)
+                    ? ''
+                    : moment(value, 'YYYY-MM-DD').format(fmt)
+            }
+        }
+    }
+</script>
+
+<style scoped>
+
+    .client-card {
+        padding: 0.4em;
+        padding-left: 1.5em;
+    }
+
+    #p {
+        margin-bottom: 0.2em;
+    }
+
+    .gender-text {
+        height: 19px;
+        color: #000;
+        font-family: Montserrat, serif !important;
+        font-size: 16px;
+        letter-spacing: 0.19px;
+        line-height: 19px;
+        margin-top: 10px;
+    }
+
+    .client-name {
+        height: 25px;
+        color: #1B2031;
+        font-size: 21px;
+        letter-spacing: 0.25px;
+        line-height: 25px;
+    }
+
+    .years-old {
+        color: #000;
+        font-size: 16px;
+        letter-spacing: 0.19px;
+        line-height: 3px;
+    }
+
+    .edit-profile {
+        height: 18px;
+        color: #55A2DC;
+        font-size: 14px;
+        letter-spacing: 0.17px;
+        line-height: 18px;
+        text-align: right;
+    }
+
+    .dob-28-02-1991 {
+        height: 18px;
+        width: 118px;
+        color: #000;
+        font-family: Montserrat !important;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.17px;
+        line-height: 18px;
+    }
+</style>
+

@@ -1,0 +1,194 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,500,700");
+
+@import "./app/brand-variables";
+@import '~bootstrap/scss/bootstrap';
+@import "client";
+
+body {
+  background-color: #d6dde9!important;
+  font-family: "Montserrat", "Open Sans", "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  color: #53565F;
+  position: relative;
+}
+
+.navbar {
+  background: #fff;
+  box-shadow: 0 0 4px 0 rgba(0,0,0,0.1);
+
+  .navbar-header {
+  	.navbar-brand {
+  	  color: $main-color;
+  	  text-transform: none;
+  	  -webkit-font-smoothing: antialiased;
+  	}
+  }
+  .nav {
+  	> li {
+  	  &.active {
+    		> a {
+    		  color: #1B2031 !important;
+    		}
+  	  }
+  	  > a {
+    		color: $brand-font-color;
+    		font-weight: bold;
+    		text-transform: none;
+  	  }
+  	}
+  }
+  &.affix {
+    .navbar-header {
+      .navbar-brand {
+  		  color: $main-color;
+      }
+  	}
+  }
+}
+
+header {
+  background: $main-color;
+  .header-content {
+	.header-content-inner {
+	  h1 {
+  		//text-transform: none;
+  		//font-weight: normal;
+  		//font-style: italic;
+  		background: rgba(0, 0, 0, 0.43);
+  		padding: 10px;
+  		display: inline-block;
+  		//text-transform: uppercase;
+  		//font-weight: bold;
+  		//font-style: normal;
+	  }
+	  p {
+  		color: #fff;
+  		background-color: rgba(0, 0, 0, 0.2);
+  		font-size: 20px;
+	  }
+	}
+  }
+}
+
+#mainNav {
+  .navbar-nav {
+    margin-top: 4px;
+  }
+}
+
+.internal-page {
+  header {
+	   padding-top: 50px;
+  }
+}
+
+hr {
+  border-color: $brand-font-color-second;
+}
+
+.service-box h3,
+.section-heading {
+  color: #999;
+}
+
+.row-colored {
+  .section-heading {
+	color: #fff;
+  }
+}
+
+a,
+.fa,
+.text-primary {
+  color: $primary;
+}
+
+.btn-primary {
+  background: $main-color;
+  border: 2px solid $brand-font-color-second;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary.focus,
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+  border-color: $brand-font-color-second;
+  color: $brand-font-color-third;
+  background-color: $secondary-color;
+}
+
+.navbar-default .nav > li>a:hover,
+.navbar-default .nav>li>a:focus:hover,
+.navbar-default.affix .nav > li>a:hover,
+.navbar-default.affix .nav>li>a:focus:hover {
+  color: #1B2031;
+}
+
+.bg-primary {
+  background-color: $secondary-color;
+  color: $brand-font-color-third;
+}
+
+.bg-dark {
+  background-color: $background-color-dark;
+  .copy {
+	color: $brand-font-color;
+  }
+}
+
+footer {
+  background: $background-color-dark;
+  bottom: 0;
+  color: $dark-font-color;
+  margin-top: 2rem;
+  position: absolute;
+  width: 100%;
+
+  ul {
+  	list-style: none;
+  	padding-left: 0px;
+
+    li {
+      font-size: 0.9rem;
+
+      a {
+        color: #EEEEEE;
+
+        &:hover {
+          color: #FFFFFF;
+        }
+      }
+    }
+  }
+}
+
+.text-faded {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.unit-label {
+  color: #000;
+  font-size: 0.9em;
+  font-weight: 400;
+}
+
+// Forms
+input, .input-control {
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+label, .control-label {
+  text-align: left;
+}
+
+@media (min-width: 768px) {
+  header {
+	min-height: 85%;
+  }
+}
