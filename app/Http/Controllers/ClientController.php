@@ -362,7 +362,6 @@ class ClientController extends Controller
         ]);
 
         $client->update($request->all());
-
         return redirect()->route('clients.index');
     }
 
