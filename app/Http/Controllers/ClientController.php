@@ -25,7 +25,7 @@ use App\Http\Resources\TestCollection;
 use App\Http\Resources\ClientCollection;
 use App\Http\Requests\Client\StoreClientRequest;
 use App\Http\Requests\Client\UpdateClientRequest;
-use App\Http\Controllers\Api\V1\Traits\ClientTests;
+use App\Http\Controllers\API\V1\Traits\ClientTests;
 
 class ClientController extends Controller
 {
