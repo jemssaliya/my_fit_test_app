@@ -35,6 +35,7 @@ use App\Http\Controllers\StripeWebhookController;
 
 Route::get('/test-view', fn () => view('oxygen::auth.register'));
 
+
 // Public Pages
 Route::get('/', [LandingPageController::class, 'index']);
 Route::get('/privacy-policy', [PagesController::class, 'privacyPolicy'])->name('pages.privacy-policy');
