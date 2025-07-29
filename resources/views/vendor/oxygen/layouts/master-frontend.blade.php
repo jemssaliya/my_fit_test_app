@@ -17,9 +17,9 @@
         rel='stylesheet' type='text/css'>
     <link href='//fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic'
           rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="//oss.maxcdn.com/fontawesome/4.5.0/css/font-awesome.min.css"/>
+    {{-- <link rel="stylesheet" href="//oss.maxcdn.com/fontawesome/4.5.0/css/font-awesome.min.css"/> --}}
 
-    <link rel="stylesheet" href="//oss.maxcdn.com/animatecss/3.5.0/animate.min.css" type="text/css">
+    {{-- <link rel="stylesheet" href="//oss.maxcdn.com/animatecss/3.5.0/animate.min.css" type="text/css"> --}}
     <!-- <link rel="stylesheet" href="/css/theme/creative.css" type="text/css"> -->
 
     <link rel="stylesheet" href="{{ mix("css/dist/public.css") }}"/>

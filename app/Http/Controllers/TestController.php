@@ -553,8 +553,16 @@ class TestController extends Controller
 
         //Todo save unique file and should be deleted temp file
         //Make Directory for unique user
-        Storage::disk('local')
-            ->makeDirectory("/public/download/{$user_id}/");
+        // Storage::disk('local')
+        //     ->makeDirectory("/public/download/{$user_id}/");
+        $folder = storage_path("app/public/download/{$user_id}");
+        $filename = "{$report_type}_test_report.pdf";
+        $fullPath = "{$folder}/{$filename}";
+
+        // ✅ Make sure the directory exists
+        if (!is_dir($folder)) {
+            mkdir($folder, 0755, true);
+        }
 
         $pdf->setPaper('a4', 'landscape')
             ->save(storage_path("app/public/download/{$user_id}/{$report_type}_test_report.pdf"));

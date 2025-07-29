@@ -1,0 +1,44 @@
+{
+    "name": "emedia/file-control",
+    "description": "Upload files to local disk or AWS S3 with auto-generating image thumbnails.",
+    "type": "package",
+    "repositories": [
+        {
+          "type":"vcs",
+          "url":"git@bitbucket.org:elegantmedia/mediamanager-laravel.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@bitbucket.org:elegantmedia/laravel-helpers.git"
+        }
+    ],
+    "require": {
+        "league/flysystem-aws-s3-v3": "~1.0",
+        "intervention/image": "~2.3",
+        "illuminate/support": "~5.7|^6.0",
+        "illuminate/http": "~5.7|^6.0",
+        "emedia/media-manager": "~1.0|~2.0",
+        "emedia/helpers": "^2.0|^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "EMedia\\FileControl\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "EMedia\\FileControl\\FileControlServiceProvider"
+            ]
+        }
+    },
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Shane Perera",
+            "email": "shane@shaneperera.com"
+        }
+    ],
+    "prefer-stable": true,
+    "minimum-stability": "dev"
+}

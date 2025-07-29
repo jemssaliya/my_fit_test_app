@@ -1,0 +1,28 @@
+{
+    "name": "emedia/deviceauthentication",
+    "description": "Package for device authentication",
+    "type": "project",
+    "require": {
+        "php": "^5.5",
+        "illuminate/support": "5.0.x|5.1.x",
+        "tymon/jwt-auth": "^1.0.0"
+    },
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Chamal",
+            "email": "chamalw.emedia@gmail.com"
+        },
+        {
+            "name": "Saranga Abeykoon",
+            "email": "saranga.elegantmedia@gmail.com",
+            "role": "Tech Lead"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+          "EMedia\\DeviceAuthentication\\": "src/"
+        }
+    },
+    "require": {}
+}
