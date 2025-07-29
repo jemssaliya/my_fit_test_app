@@ -104,6 +104,7 @@ Route::middleware(['auth', 'subscription'])->group(function () {
     Route::get('/clients/{client}/tests', [ClientController::class, 'getTests'])->name('clients.tests');
     Route::get('/clients/{client}/view-tests/{test}', [ClientController::class, 'viewTest']);
     Route::delete('/clients/{client}/tests', [ClientController::class, 'deleteTests']);
+    Route::get('/clients/edit/{id}', [ClientController::class, 'edit']);
     Route::put('/clients', [ClientController::class, 'update']);
     Route::resource('clients', ClientController::class);
     Route::get('/add-client', [ClientController::class, 'create']);
@@ -117,6 +118,8 @@ Route::middleware(['auth', 'subscription'])->group(function () {
 
     Route::resource('protocols', ProtocolController::class);
     Route::resource('programs', ProgramController::class);
+    Route::get('/new-program', [ProgramController::class, 'create']);
+    Route::get('/view-program', [ProgramController::class, 'viewProgram']);
     Route::post('/program/download', [ProgramController::class, 'download']);
     Route::get('/program/download', [ProgramController::class, 'download']);
     Route::resource('availabledata', AvailableDataController::class);
@@ -136,6 +139,7 @@ Route::middleware(['auth', 'subscription'])->group(function () {
         Route::resource('files', ManageFilesController::class)->only('index', 'create', 'store', 'edit', 'update', 'destroy');
 
         Route::get('articles/{article}/edit', [ArticleController::class, 'edit'])->name('article.edit');
+        Route::get('articles', [ArticleController::class, 'index'])->name('articles');
         Route::resource('articles', ArticleController::class);
         Route::get('videos/{video}/edit', [VideoController::class, 'edit'])->name('video.edit');
         Route::resource('videos', VideoController::class);
