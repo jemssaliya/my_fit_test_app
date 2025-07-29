@@ -28,6 +28,8 @@ use Illuminate\View\View;
 use Redirect;
 use PDF;
 use Storage;
+use Carbon\Carbon;
+
 
 class CompareTestController extends Controller
 {
@@ -81,6 +83,7 @@ class CompareTestController extends Controller
 
     public function store(Request $request)
     {
+
         $compare = Compare::create(['client_id' => $request->client_id]);
 
         // save comapare data as x and y
@@ -89,7 +92,8 @@ class CompareTestController extends Controller
                 CompareData::create([
                     'compare_id' => (int)$compare->id,
                     'test_type' => (int)$cycle['test_type'],
-                    'x' => $cycle['created_at'],
+                    'x' => Carbon::parse($cycle['created_at']),
+                    // 'x' => $cycle['created_at'] Carbon::parse(,
                     'y' => (float)$cycle['table1'][0]['vo2peakEst']['value'],
                     'color_code'=>$this->random_color_part($key)
                 ]);
@@ -101,7 +105,8 @@ class CompareTestController extends Controller
                 CompareData::create([
                     'compare_id' => (int)$compare->id,
                     'test_type' => (int)$walk['test_type'],
-                    'x' => $walk['created_at'],
+                    // 'x' => $walk['created_at'],
+                    'x' => Carbon::parse($walk['created_at']),
                     'y' => (float)$walk['table1'][0]['vo2peakEst']['value'],
                     'color_code'=>$this->random_color_part($key)
                 ]);
@@ -113,7 +118,8 @@ class CompareTestController extends Controller
                 CompareData::create([
                     'compare_id' => (int)$compare->id,
                     'test_type' => (int)$run['test_type'],
-                    'x' => $run['created_at'],
+                    'x' => Carbon::parse($run['created_at']),
+                    // 'x' => $run['created_at'],
                     'y' => (float)$run['table1'][0]['vo2peakEst']['value'],
                     'color_code'=>$this->random_color_part($key)
                 ]);
@@ -125,13 +131,13 @@ class CompareTestController extends Controller
                 CompareData::create([
                     'compare_id' => (int)$compare->id,
                     'test_type' => (int)$step['test_type'],
-                    'x' => $step['created_at'],
+                    // 'x' => $step['created_at'],
+                    'x' => Carbon::parse($step['created_at']),
                     'y' => (float)$step['table1'][0]['vo2peakEst']['value'],
                     'color_code'=>$this->random_color_part($key)
                 ]);
             }
         }
-
         return new CompareResource($compare);
     }
 
@@ -356,7 +362,18 @@ class CompareTestController extends Controller
         $run_table = $request->run_table;
         $step_table = $request->step_table;
 
-
+        // $html =  view('test.exports.compare-report-pdf', compact('client',
+        //     'cycle_test',
+        //     'walk_test',
+        //     'run_test',
+        //     'step_test',
+        //     'cycle_table',
+        //     'walk_table',
+        //     'run_table',
+        //     'step_table'
+        //  ))
+        //  ->render();
+        //  dd($html);
         $pdf = PDF::loadView('test.exports.compare-report-pdf', compact('client',
             'cycle_test',
             'walk_test',
@@ -371,9 +388,18 @@ class CompareTestController extends Controller
 
         //Todo save unique file and should be deleted temp file
         //Make Directory for unique user
-        Storage::disk('local')
-            ->makeDirectory("/public/download/{$user_id}/");
-   
+        // Storage::disk('local')
+        //     ->makeDirectory("/public/download/{$user_id}/");
+
+        $folder = storage_path("app/public/download/{$user_id}");
+        $filename = "compare_test_report.pdf";
+        $fullPath = "{$folder}/{$filename}";
+
+        // ✅ Make sure the directory exists
+        if (!is_dir($folder)) {
+            mkdir($folder, 0755, true);
+        }
+
         $pdf->setPaper('a4', 'landscape')
             ->save(storage_path("app/public/download/{$user_id}/compare_test_report.pdf"));
 
