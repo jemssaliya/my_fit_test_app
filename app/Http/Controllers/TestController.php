@@ -349,6 +349,7 @@ class TestController extends Controller
             $table2 = [];
             $testId = $request->test_id;
             $test_type = $testDataQuery[0]->test_type;
+            $chart_type = $testDataQuery[0]->chart_type;
             $test_name = $testDataQuery[0]->name;
             $input_data = $testDataQuery[0]->inputData;
             $date = $testDataQuery[0]->created_at;
@@ -407,6 +408,7 @@ class TestController extends Controller
                 'data',
                 'testId',
                 'test_type',
+                'chart_type',
                 'test_name',
                 'input_data',
                 'test_type_name',

@@ -20,6 +20,7 @@ class Test extends Model
         'age',
         'weight',
         'test_type',
+        'chart_type',
         'client_id',
         'user_id',
         'slope',
