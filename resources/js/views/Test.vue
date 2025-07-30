@@ -1536,7 +1536,7 @@
 
                 } else {
                     //   window.axios.post('http://localhost:8000/tests', {
-                    window.axios.post(this.$config.BASE_URL + '/tests', {
+                    window.axios.post(this.$config.BASE_URL + '/tests/', {
                         name: this.test_name,
                         age: this.client.age,
                         client_id: this.client.id,
