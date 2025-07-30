@@ -69,6 +69,7 @@
         /** Define the margins of your page **/
         @page {
             margin: 20px 20px;
+            margin-left: 3px !important;
         }
         .page-break{
             page-break-after:always;
@@ -93,70 +94,60 @@
 </head>
 <body>
     @if($cycle_test)
-    <div class="row">
-        <div>
-            <tr>
-                <th colspan="2">
-                    <div class="row" style="margin-left: 0">
-                        @include('components.pdf-client-logo')
+    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td width="25%" align="left" style="width: 25%;margin: 0px !important;padding: 0px !important;">
+                 @include('components.pdf-client-logo')
+            </td>
+            <td width="50%"  align="center"  style="width: 50%; background-color: white !important; border: 1px solid #111 !important; text-align: center !important;" >
+                                    <h1 style="font-family:'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size:22px; font-weight:600;text-align: center;" class="d-inline" >
+                                        {{ $client['name'] }}
+                                    </h1>
+                                    <table style="width: 100%; margin: auto;">
+                                        <tr>
+                                            <td class="text-right"> Gender</td>
+                                            <td>:</td>
+                                            <td class="text-primary text-left">{{$client['gender']}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">DOB</td>
+                                            <td>:</td>
+                                            <td class="text-primary text-left">
+                                                {{\Carbon\Carbon::parse($client['dob'])->format('d/m/Y')}}
+                                                ({{$client['age']}} Years old)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">Date of Report</td>
+                                            <td>:</td>
+                                            <td class="text-primary text-left">
+                                                {{\Carbon\Carbon::today()->format('d/m/Y')}}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table style="width: 100%; margin: auto;align: center;">
+                                        <tr>
+                                            <td class="text-primary" style="text-align: center !important;">Compare Test Reports</td>
+                                        </tr>
+                                    </table>
+            </td>
+            <td width="25%" style="width: 25%;" align="right">
+                 @include('components.pdf-logo')
+            </td>
+        </tr>
+    </table>
 
-                        <div class="col-4 client-info text-center">
-                            <h1 style="
-                        font-family:'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;
-                        font-size:22px;
-                        font-weight:600;
-                        text-align: center;
-                        " class="d-inline"
-                            >
-                                {{$client['name']}}
-                            </h1>
-                            <table style="width: 100%; margin: auto;">
-                                <tr>
-                                    <td class="text-right"> Gender</td>
-                                    <td>:</td>
-                                    <td class="text-primary text-left">{{$client['gender']}}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-right">DOB</td>
-                                    <td>:</td>
-                                    <td class="text-primary text-left">
-                                        {{\Carbon\Carbon::parse($client['dob'])->format('d/m/Y')}}
-                                        ({{$client['age']}} Years old)
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-right">Date of Report</td>
-                                    <td>:</td>
-                                    <td class="text-primary text-left">
-                                        {{\Carbon\Carbon::today()->format('d/m/Y')}}
-                                    </td>
-                                </tr>
-                            </table>
-                            <table style="width: 100%; margin: auto;">
-                                <tr>
-                                    <td class="text-primary">Compare Test Reports</td>
-                                </tr>
-                            </table>
-                        </div>
-
-                        @include('components.pdf-logo')
-                    </div>
-                </th>
-            </tr>
-        </div>
-    </div>
-    <h2 style="font-family:'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size:20px; font-weight:500;">
-                    Cycle Tests
-        </h2>
-         
-    <div class="row">
-        <div class="line-chart col-8" style="background-color: #EEF1F9;">
-            <img alt="Line chart"
-                src="{{$cycle_test}}"
-                class="graph-image col-12"/>
-        </div>
-        <div class="col-3" style="margin-left: auto;">
-            <table class="table table-bordered bg-light" style="margin-top: 32px">
+    <h2 style="font-family:'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size:20px; font-weight:500;margin-left:20px !important;margin-top:20px !important;">
+        Cycle Tests
+    </h2>
+    <table width="100%" border="0" cellspacing="0" cellpadding="5" >
+        <td width="65%" align="left" style="margin-left:0px !important;">
+            <div class="line-chart" style="background-color: #EEF1F9;">
+                <img alt="Line chart" src="{{$cycle_test}}" class="graph-image col-12"/>
+            </div>
+        </td>
+        <td width="25%" style="width: 25%;text-align: right;" align="right">
+            <table class="table table-bordered bg-light" style="margin-top: 32px;border-collapse: collapse; width: auto;float: right;min-width:90%;">
                 <thead>
                 <tr>
                     <th>#</th>
@@ -175,60 +166,64 @@
                     @endforeach
                 @endif
             </table>
-        </div>
-    </div>
+        </td>
+    </table>
     @endif
-    @if($walk_test)
+    {{-- @if($walk_test)
     <div class="row">
         <div>
-            <tr>
-                <th colspan="2">
-                    <div class="row" style="margin-left: 0">
-                        @include('components.pdf-client-logo')
+         <table style="width: 100%;">
+          <thead>
+                <tr>
+                    <th colspan="2">
+                        <div class="row" style="margin-left: 0">
+                            @include('components.pdf-client-logo')
 
-                        <div class="col-4 client-info text-center">
-                            <h1 style="
-                        font-family:'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;
-                        font-size:22px;
-                        font-weight:600;
-                        text-align: center;
-                        " class="d-inline"
-                            >
-                                {{$client['name']}}
-                            </h1>
-                            <table style="width: 100%; margin: auto;">
-                                <tr>
-                                    <td class="text-right"> Gender</td>
-                                    <td>:</td>
-                                    <td class="text-primary text-left">{{$client['gender']}}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-right">DOB</td>
-                                    <td>:</td>
-                                    <td class="text-primary text-left">
-                                        {{\Carbon\Carbon::parse($client['dob'])->format('d/m/Y')}}
-                                        ({{$client['age']}} Years old)
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-right">Date of Report</td>
-                                    <td>:</td>
-                                    <td class="text-primary text-left">
-                                        {{\Carbon\Carbon::today()->format('d/m/Y')}}
-                                    </td>
-                                </tr>
-                            </table>
-                            <table style="width: 100%; margin: auto;">
-                                <tr>
-                                    <td class="text-primary">Compare Test Reports</td>
-                                </tr>
-                            </table>
+                            <div class="col-4 client-info text-center">
+                                <h1 style="
+                            font-family:'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;
+                            font-size:22px;
+                            font-weight:600;
+                            text-align: center;
+                            " class="d-inline"
+                                >
+                                    {{$client['name']}}
+                                </h1>
+                                <table style="width: 100%; margin: auto;">
+                                    <tr>
+                                        <td class="text-right"> Gender</td>
+                                        <td>:</td>
+                                        <td class="text-primary text-left">{{$client['gender']}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">DOB</td>
+                                        <td>:</td>
+                                        <td class="text-primary text-left">
+                                            {{\Carbon\Carbon::parse($client['dob'])->format('d/m/Y')}}
+                                            ({{$client['age']}} Years old)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">Date of Report</td>
+                                        <td>:</td>
+                                        <td class="text-primary text-left">
+                                            {{\Carbon\Carbon::today()->format('d/m/Y')}}
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table style="width: 100%; margin: auto;">
+                                    <tr>
+                                        <td class="text-primary">Compare Test Reports</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            @include('components.pdf-logo')
                         </div>
-
-                        @include('components.pdf-logo')
-                    </div>
-                </th>
-            </tr>
+                    </th>
+                </tr>
+           </thead>
+        </table>
         </div>
     </div>
     <h2 class="mt-2" style="font-family:'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size:20px; font-weight:500;">
@@ -266,54 +261,58 @@
     @if($run_test)
     <div class="row">
         <div>
-            <tr>
-                <th colspan="2">
-                    <div class="row" style="margin-left: 0">
-                        @include('components.pdf-client-logo')
+          <table style="width: 100%;">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                        <div class="row" style="margin-left: 0">
+                            @include('components.pdf-client-logo')
 
-                        <div class="col-4 client-info text-center">
-                            <h1 style="
-                        font-family:'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;
-                        font-size:22px;
-                        font-weight:600;
-                        text-align: center;
-                        " class="d-inline"
-                            >
-                                {{$client['name']}}
-                            </h1>
-                            <table style="width: 100%; margin: auto;">
-                                <tr>
-                                    <td class="text-right"> Gender</td>
-                                    <td>:</td>
-                                    <td class="text-primary text-left">{{$client['gender']}}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-right">DOB</td>
-                                    <td>:</td>
-                                    <td class="text-primary text-left">
-                                        {{\Carbon\Carbon::parse($client['dob'])->format('d/m/Y')}}
-                                        ({{$client['age']}} Years old)
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-right">Date of Report</td>
-                                    <td>:</td>
-                                    <td class="text-primary text-left">
-                                        {{\Carbon\Carbon::today()->format('d/m/Y')}}
-                                    </td>
-                                </tr>
-                            </table>
-                            <table style="width: 100%; margin: auto;">
-                                <tr>
-                                    <td class="text-primary">Compare Test Reports</td>
-                                </tr>
-                            </table>
+                            <div class="col-4 client-info text-center">
+                                <h1 style="
+                            font-family:'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;
+                            font-size:22px;
+                            font-weight:600;
+                            text-align: center;
+                            " class="d-inline"
+                                >
+                                    {{$client['name']}}
+                                </h1>
+                                <table style="width: 100%; margin: auto;">
+                                    <tr>
+                                        <td class="text-right"> Gender</td>
+                                        <td>:</td>
+                                        <td class="text-primary text-left">{{$client['gender']}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">DOB</td>
+                                        <td>:</td>
+                                        <td class="text-primary text-left">
+                                            {{\Carbon\Carbon::parse($client['dob'])->format('d/m/Y')}}
+                                            ({{$client['age']}} Years old)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">Date of Report</td>
+                                        <td>:</td>
+                                        <td class="text-primary text-left">
+                                            {{\Carbon\Carbon::today()->format('d/m/Y')}}
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table style="width: 100%; margin: auto;">
+                                    <tr>
+                                        <td class="text-primary">Compare Test Reports</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            @include('components.pdf-logo')
                         </div>
-
-                        @include('components.pdf-logo')
-                    </div>
-                </th>
-            </tr>
+                    </th>
+                </tr>
+            </thead>
+         </table>
         </div>
     </div>
     <h2 class="mt-2" style="font-family:'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size:20px; font-weight:500;">
@@ -351,54 +350,59 @@
     @if($step_test)
     <div class="row">
         <div>
-            <tr>
-                <th colspan="2">
-                    <div class="row" style="margin-left: 0">
-                        @include('components.pdf-client-logo')
 
-                        <div class="col-4 client-info text-center">
-                            <h1 style="
-                        font-family:'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;
-                        font-size:22px;
-                        font-weight:600;
-                        text-align: center;
-                        " class="d-inline"
-                            >
-                                {{$client['name']}}
-                            </h1>
-                            <table style="width: 100%; margin: auto;">
-                                <tr>
-                                    <td class="text-right"> Gender</td>
-                                    <td>:</td>
-                                    <td class="text-primary text-left">{{$client['gender']}}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-right">DOB</td>
-                                    <td>:</td>
-                                    <td class="text-primary text-left">
-                                        {{\Carbon\Carbon::parse($client['dob'])->format('d/m/Y')}}
-                                        ({{$client['age']}} Years old)
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-right">Date of Report</td>
-                                    <td>:</td>
-                                    <td class="text-primary text-left">
-                                        {{\Carbon\Carbon::today()->format('d/m/Y')}}
-                                    </td>
-                                </tr>
-                            </table>
-                            <table style="width: 100%; margin: auto;">
-                                <tr>
-                                    <td class="text-primary">Compare Test Reports</td>
-                                </tr>
-                            </table>
+        <table style="width: 100%;">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                        <div class="row" style="margin-left: 0">
+                            @include('components.pdf-client-logo')
+
+                            <div class="col-4 client-info text-center">
+                                <h1 style="
+                            font-family:'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;
+                            font-size:22px;
+                            font-weight:600;
+                            text-align: center;
+                            " class="d-inline"
+                                >
+                                    {{$client['name']}}
+                                </h1>
+                                <table style="width: 100%; margin: auto;">
+                                    <tr>
+                                        <td class="text-right"> Gender</td>
+                                        <td>:</td>
+                                        <td class="text-primary text-left">{{$client['gender']}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">DOB</td>
+                                        <td>:</td>
+                                        <td class="text-primary text-left">
+                                            {{\Carbon\Carbon::parse($client['dob'])->format('d/m/Y')}}
+                                            ({{$client['age']}} Years old)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">Date of Report</td>
+                                        <td>:</td>
+                                        <td class="text-primary text-left">
+                                            {{\Carbon\Carbon::today()->format('d/m/Y')}}
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table style="width: 100%; margin: auto;">
+                                    <tr>
+                                        <td class="text-primary">Compare Test Reports</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            @include('components.pdf-logo')
                         </div>
-
-                        @include('components.pdf-logo')
-                    </div>
-                </th>
-            </tr>
+                    </th>
+                </tr>
+            </thead>
+        </table>
         </div>
     </div>
     <h2 class="mt-2" style="font-family:'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size:20px; font-weight:500;">
@@ -432,6 +436,6 @@
             </table>
         </div>
     </div>
-    @endif
+    @endif --}}
     </body>
 </html>

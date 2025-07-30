@@ -1,4 +1,4 @@
-<div class="col-4 client-logo column pl-0 ml-0">
+{{-- <div class="col-4 client-logo column pl-0 ml-0"> --}}
     <img class="float-left" style="width:200px; height: 100px"
          src='data:image/png;base64,
             {{
@@ -8,4 +8,4 @@
                 : base64_encode(file_get_contents(public_path('images/fit_test_logo_placeholder.jpeg')))
             }}'
     />
-</div>
+{{-- </div> --}}
