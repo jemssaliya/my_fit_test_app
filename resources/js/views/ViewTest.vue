@@ -379,6 +379,7 @@
             },
             testid: 0,
             test_type: 0,
+            chart_type: null,
             testname: null,
             testtypename: null,
         },
@@ -417,6 +418,7 @@
                 error: null,
                 loading: false,
                 selected: '',
+                selectedChartType: '',
                 selectedavl: '',
                 items: [],
                 itemsDummyData: [],
@@ -561,16 +563,28 @@
                 }
             },
             fillData() {
+                if(this.selectedChartType == 'peak_workrate') {
+                    var point = {
+                        x: this.trendLineData[1].x, // your dynamic x value
+                        y: this.trendLineData[1].y
+                    }
+                } else {
+                    var point = {
+                        x: (this.items[0]['vo2peakEst'].value ? this.items[0]['vo2peakEst'].value : 0),
+                        y: (this.items[0]['HRpeak'].value ? this.items[0]['HRpeak'].value : 0)
+                    }
+                }
                 this.datacollection = {
                     labels: this.graphX,
                     datasets: [
                         {
                             label: 'VO2peak',
                             backgroundColor: '#f5f5f500',
-                            data: [{
-                                x: (this.items.length > 0 ? this.items[0]['vo2peakEst'].value : 0),
-                                y: (this.items.length > 0 ? this.items[0]['HRpeak'].value : 0)
-                            }], // send VO2 peak and hrpeak here
+                            data: [point],
+                            // data: [{
+                                // x: (this.items.length > 0 ? this.items[0]['vo2peakEst'].value : 0),
+                                // y: (this.items.length > 0 ? this.items[0]['HRpeak'].value : 0)
+                            // }], // send VO2 peak and hrpeak here
                             borderColor: '#dd4b45',
                             borderWidth: 10,
                             pointBackgroundColor: "#dd4b45",
@@ -583,16 +597,16 @@
                             backgroundColor: '#f5f5f500',
                             data: this.scatterData,
                             // data: this.graphY,
-                            borderColor: '#82cd4d',
+                            borderColor: this.selectedChartType == 'peak_workrate' ? '#0474C8' : '#82cd4d',
                             borderWidth: 1,
                             showLine: false,
-                            pointBackgroundColor: "#82cd4d",
+                            pointBackgroundColor: this.selectedChartType == 'peak_workrate' ? '#0474C8' : '#82cd4d',
                         },
                         {
                             label: 'Trend',
                             backgroundColor: '#f5f5f500',
                             data: this.trendLineData,
-                            borderColor: '#82cd4d',
+                            borderColor: this.selectedChartType == 'peak_workrate' ? '#0474C8' : '#82cd4d',
                             borderWidth: 4,
                             showLine: true,
                         }
@@ -603,7 +617,7 @@
                 var date1 = new Date(this.dateTest);
                 var date2 = new Date(this.client.dob);
                 var diff = parseFloat(Math.floor((date1 - date2)/86400000)/365.25).toFixed(4);
-                
+
                 if (this.client.gender == 'Male') {
                     this.datacollection2 = {
                         labels: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120],
@@ -790,6 +804,10 @@
 
             getTestData(type) {
                 this.selected = this.test_type;
+                this.selectedChartType = this.chart_type;
+                console.log(this.chart_type);
+
+
                 const param1 = this.selected;
 
                 window.axios.get(this.$config.BASE_URL + '/api/test-types/' + (param1)).then((res) => {

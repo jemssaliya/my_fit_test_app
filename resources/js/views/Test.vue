@@ -32,6 +32,14 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <select v-model="selectedChartType" id="inputState"
+                            class="form-control form-control-lg bg-light test-dropdown w-100"
+                            @change="getChartData(1);adjustInputs()">
+                        <option value="hr_peak">VO2peak based on HRpeak</option>
+                        <option value="peak_workrate">VO2peak based on peak workrate</option>
+                    </select>
+                </div>
             </div>
         </section>
 
@@ -399,6 +407,7 @@
                 loading: false,
                 selected: '',
                 selectedProtocol: '',
+                selectedChartType: 'hr_peak',
                 showProtocol: false,
                 selectedavl: '',
                 items: [],
@@ -553,16 +562,24 @@
                 }
             },
             fillData() {
+                if(this.selectedChartType == 'peak_workrate') {
+                    var point = {
+                        x: this.trendLineData[1].x, // your dynamic x value
+                        y: this.trendLineData[1].y
+                    }
+                } else {
+                    var point = {
+                        x: (this.items[0]['vo2peakEst'].value ? this.items[0]['vo2peakEst'].value : 0),
+                        y: (this.items[0]['HRpeak'].value ? this.items[0]['HRpeak'].value : 0)
+                    }
+                }
                 this.datacollection = {
                     labels: this.graphX,
                     datasets: [
                         {
                             label: 'VO2peak',
                             backgroundColor: '#f5f5f500',
-                            data: [{
-                                x: (this.items[0]['vo2peakEst'].value ? this.items[0]['vo2peakEst'].value : 0),
-                                y: (this.items[0]['HRpeak'].value ? this.items[0]['HRpeak'].value : 0)
-                            }], // send VO2 peak and hrpeak here
+                            data: [point], // send VO2 peak and hrpeak here
                             borderColor: '#dd4b45',
                             borderWidth: 10,
                             pointBackgroundColor: "#dd4b45",
@@ -575,16 +592,16 @@
                             backgroundColor: '#f5f5f500',
                             data: this.scatterData,
                             // data: this.graphY,
-                            borderColor: '#82cd4d',
+                            borderColor: this.selectedChartType == 'peak_workrate' ? '#0474C8' : '#82cd4d',
                             borderWidth: 1,
                             showLine: false,
-                            pointBackgroundColor: "#82cd4d"
+                            pointBackgroundColor: this.selectedChartType == 'peak_workrate' ? '#0474C8' : '#82cd4d'
                         },
                         {
                             label: 'Trend',
                             backgroundColor: '#f5f5f500',
                             data: this.trendLineData,
-                            borderColor: '#82cd4d',
+                            borderColor: this.selectedChartType == 'peak_workrate' ? '#0474C8' : '#82cd4d',
                             borderWidth: 4,
                             showLine: true,
                         }
@@ -916,6 +933,7 @@
                 }
                 this.adjustRowNumbers();
                 if (typeof this.items[0]['hrRest'] !== 'undefined') {
+                    console.log(this.hrRest, "this.hrRest");
                     this.items[0]['hrRest'].value = this.hrRest;
                 }
 
@@ -1524,6 +1542,7 @@
                         client_id: this.client.id,
                         client_id: this.client.id,
                         test_type: this.selected,
+                        chart_type: this.selectedChartType,
                         table1: this.items,
                         table2: this.avlDataItems,
                         table1_id: this.table1_id,
@@ -1638,8 +1657,12 @@
                 //         this.avlDataItems[i]['vo2genpercent'].value = this.CustomDecimal(this.avlDataItems[i]['vo2genpercent'].value, 1);
                 //     }
                 // }
+            },
+            getChartData(){
+                for (var i = 0; i < this.avlDataItems.length; i++) {
+                    this.calculateVO2Gen(1, i);
+                }
             }
-
         }
 
     })
