@@ -379,7 +379,7 @@
             },
             testid: 0,
             test_type: 0,
-            chart_type: 0,
+            chart_type: null,
             testname: null,
             testtypename: null,
         },
@@ -418,6 +418,7 @@
                 error: null,
                 loading: false,
                 selected: '',
+                selectedChartType: '',
                 selectedavl: '',
                 items: [],
                 itemsDummyData: [],
@@ -803,7 +804,9 @@
 
             getTestData(type) {
                 this.selected = this.test_type;
-                this.selectedChartType = this.chart_type ? this.chart_type : 'hr_peak';
+                this.selectedChartType = this.chart_type;
+                console.log(this.chart_type);
+
 
                 const param1 = this.selected;
 
