@@ -96,64 +96,65 @@
             display: flex;
         }
 
+        .line-chart img {
+            width: 460px;
+            height: 280px;
+            display: block;
+        }
     </style>
 
 </head>
 <body>
-<div class="row ml-2 pl-1">
-    {{--Report Client Logo--}}
-    @include('components.pdf-client-logo')
-
-    <div class="col-4 client-info text-center">
-        <h1 style="
-                   font-family:'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;
-                   font-size:22px;
-                   font-weight:600;
-                   text-align: center;
-                  " class="d-inline"
-        >
-            {{$client['name']}}
-        </h1>
-        <table style="width: 100%; margin: auto;">
-            <tr>
-                <td class="text-right"> Gender</td>
-                <td>:</td>
-                <td class="text-primary text-left">{{$client['gender']}}</td>
-            </tr>
-            <tr>
-                <td class="text-right"> Weight (kg)</td>
-                <td>:</td>
-                <td class="text-primary text-left">{{$client['weight']??'-'}}</td>
-            </tr>
-            <tr>
-                <td class="text-right">DOB</td>
-                <td>:</td>
-                <td class="text-primary text-left">
-                    {{\Carbon\Carbon::parse($client['dob'])->format('d/m/Y')}}
-                    ({{$age_test}} Years old)
-                </td>
-            </tr>
-            <tr>
-                <td class="text-right" style="line-height: 15px; width: 50%">{{$test_details['test_type']}}</td>
-                <td>:</td>
-                <td class="text-primary text-left" style="line-height: 15px; width: 50%">{{$test_details['test_name']}}<td>
-            </tr>
-            <tr>
-                <td class="text-right">Date of Test</td>
-                <td>:</td>
-                <td class="text-primary text-left">
-                    {{\Carbon\Carbon::parse($date_test)->format('d/m/Y')}}
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    {{--Site Logo--}}
-    @include('components.pdf-logo')
-</div>
+    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td width="25%" align="left" style="width: 25%;margin: 0px !important;padding: 0px !important;">
+                @include('components.pdf-client-logo')
+            </td>
+            <td width="50%" align="center" style="width: 50%; background-color: white !important; border: 1px solid #111 !important; text-align: center !important; padding: 0px !important;">
+                <h1 style="font-size:22px; font-weight: 800;padding: 0px !important;margin: 0px !important;" class="d-inline">
+                    {{$client['name']}}
+                </h1>
+                <table style="width: 100%;">
+                    <tr>
+                        <td class="text-right"> Gender</td>
+                        <td>:</td>
+                        <td class="text-primary text-left">{{$client['gender']}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-right"> Weight (kg)</td>
+                        <td>:</td>
+                        <td class="text-primary text-left">{{$client['weight']??'-'}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-right">DOB</td>
+                        <td>:</td>
+                        <td class="text-primary text-left">
+                            {{\Carbon\Carbon::parse($client['dob'])->format('d/m/Y')}}
+                            ({{$age_test}} Years old)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right" style="line-height: 15px; width: 50%">{{$test_details['test_type']}}</td>
+                        <td>:</td>
+                        <td class="text-primary text-left" style="line-height: 15px; width: 50%">{{$test_details['test_name']}}<td>
+                    </tr>
+                    <tr>
+                        <td class="text-right">Date of Test</td>
+                        <td>:</td>
+                        <td class="text-primary text-left">
+                            {{\Carbon\Carbon::parse($date_test)->format('d/m/Y')}}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td width="25%" style="width: 25%;" align="right">
+                @include('components.pdf-logo')
+            </td>
+        </tr>
+    </table>
 
 <div class="table-responsive mb-3">
-    <table class="w-100" style="border-collapse: separate; border-spacing: 10px;">
+    <table class="w-100" style="border-collapse: separate; border-spacing: 10px; margin-top: 15px">
         <thead style="background-color: rgb(238, 241, 249);">
         <tr>
             @if(!empty($legend_data))
@@ -252,7 +253,23 @@
         </table>
     @endif
 
-    <div class="chart-section">
+    <table style="width:100%; border-collapse: separate; border-spacing: 12px;">
+        <tr>
+            <td style="width:50%; vertical-align:top; background-color:#EEF1F9; padding: 15px !important; border-radius:8px;">
+                <p style="font-size: .75em; color: #696e7a; font-weight: 400; font-family: 'Montserrat', 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+                    Linear Correlation: <strong>{{$scatter_chart['correlation']}}</strong>
+                </p>
+                <img src="{{$scatter_chart['image']}}" alt="Scatter Chart"
+                    style="width: 100%; max-width: 460px; height: 280px;"/>
+            </td>
+            <td style="width:50%; vertical-align:top; background-color:#EEF1F9; padding: 15px !important; border-radius:8px;">
+                <img src="{{$line_chart}}" alt="Line Chart"
+                    style="width: 100%; max-width: 460px; height: 280px; padding-top: 2.15rem;"/>
+            </td>
+        </tr>
+    </table>
+
+    {{-- <div class="chart-section">
         <table class="table table-borderless m-0 p-0" style="border-collapse: separate; border-spacing: 6px;">
             <tr>
                 <td class="p-0">
@@ -275,7 +292,7 @@
                 </td>
             </tr>
         </table>
-    </div>
+    </div> --}}
 </section>
 </body>
 </html>

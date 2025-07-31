@@ -362,18 +362,6 @@ class CompareTestController extends Controller
         $run_table = $request->run_table;
         $step_table = $request->step_table;
 
-        // $html =  view('test.exports.compare-report-pdf', compact('client',
-        //     'cycle_test',
-        //     'walk_test',
-        //     'run_test',
-        //     'step_test',
-        //     'cycle_table',
-        //     'walk_table',
-        //     'run_table',
-        //     'step_table'
-        //  ))
-        //  ->render();
-        //  dd($html);
         $pdf = PDF::loadView('test.exports.compare-report-pdf', compact('client',
             'cycle_test',
             'walk_test',
