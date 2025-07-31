@@ -269,30 +269,6 @@
         </tr>
     </table>
 
-    {{-- <div class="chart-section">
-        <table class="table table-borderless m-0 p-0" style="border-collapse: separate; border-spacing: 6px;">
-            <tr>
-                <td class="p-0">
-                    <div class="col-12 line-chart mt-0" style="background-color: #EEF1F9;">
-                        <p style="font-size: .75em;color: #696e7a; font-weight: 400;
-                        font-family: 'Montserrat', 'Open Sans', 'Helvetica Neue',Helvetica,Arial,sans-serif;">
-                            Linear Correlation: <strong>{{$scatter_chart['correlation']}} </strong></p>
-                        <img alt="Line chart"
-                             src="{{$scatter_chart['image']}}"
-                             style="width: 460px; height: 280px;"/>
-                    </div>
-                </td>
-
-                <td class="p-0">
-                    <div class="col-12 line-chart mt-0" style="background-color: #EEF1F9;">
-                        <img alt="Line chart"
-                             src="{{$line_chart}}"
-                             style="width: 460px; height: 280px;  padding-top: 2.15rem !important;">
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div> --}}
 </section>
 </body>
 </html>
