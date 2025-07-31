@@ -181,7 +181,7 @@
 
 <section id="section-b-2" class="px-0 pt-0 mt-0 mx-0">
     @if ($report_type == 'full')
-        <table class="table ml-2 pl-2" style="border-collapse: separate; border-spacing: 2px;">
+        <table class="table ml-2" style="border-collapse: separate; border-spacing: 2px;">
             <thead style="background-color: rgb(238, 241, 249);">
             <tr>
                 @if (!empty($summery_headers))
@@ -212,7 +212,7 @@
             </thead>
         </table>
 
-        <table class="table ml-2 pl-2" style="border-collapse: separate; border-spacing: 2px; margin-top: 20px;">
+        <table class="table ml-2" style="border-collapse: separate; border-spacing: 2px; margin-top: 20px;">
             <thead>
             <tr>
                 @if(!empty($table_headers))
