@@ -1678,7 +1678,7 @@
                     .then((res) => {
                         const link = document.createElement('a');
 
-                        link.href = res.data.url;
+                        link.href = `${res.data.url}?v=${Date.now()}`;
                         link.download = res.data.url.substr(res.data.url.lastIndexOf('/') + 1);
                         link.click();
                         this.disablePrintBtn(type, false, 0);

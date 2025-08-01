@@ -592,16 +592,16 @@
                             backgroundColor: '#f5f5f500',
                             data: this.scatterData,
                             // data: this.graphY,
-                            borderColor: this.selectedChartType == 'peak_workrate' ? '#0474C8' : '#82cd4d',
+                            borderColor: '#82cd4d',
                             borderWidth: 1,
                             showLine: false,
-                            pointBackgroundColor: this.selectedChartType == 'peak_workrate' ? '#0474C8' : '#82cd4d'
+                            pointBackgroundColor: '#82cd4d'
                         },
                         {
                             label: 'Trend',
                             backgroundColor: '#f5f5f500',
                             data: this.trendLineData,
-                            borderColor: this.selectedChartType == 'peak_workrate' ? '#0474C8' : '#82cd4d',
+                            borderColor: '#82cd4d',
                             borderWidth: 4,
                             showLine: true,
                         }
@@ -2036,5 +2036,9 @@
         #section-a .form-control-lg {
             width: 100%;
         }
+
+    }
+    thead {
+        display: table-header-group !important;
     }
 </style>
